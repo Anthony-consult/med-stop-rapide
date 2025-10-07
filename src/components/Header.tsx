@@ -17,11 +17,13 @@ export const Header = () => {
       <div className="container flex h-16 items-center justify-between px-4">
         {/* Logo */}
         <Link to="/" className="flex items-center space-x-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground font-bold text-lg">
-            M+
-          </div>
+          <img 
+            src="/logo-big.png" 
+            alt="Consult-Rapide" 
+            className="h-10 w-auto"
+          />
           <span className="hidden font-bold sm:inline-block text-lg">
-            Medicineo
+            Consult-Rapide
           </span>
         </Link>
 
