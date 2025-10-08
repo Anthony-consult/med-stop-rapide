@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 const navigation = [
   { name: "Accueil", href: "/" },
   { name: "Comment ça marche", href: "/comment-ca-marche" },
-  { name: "Contact", href: "/contact" },
+  { name: "À propos", href: "/a-propos" },
 ];
 
 export const Header = () => {
@@ -22,9 +22,6 @@ export const Header = () => {
             alt="Consult-Rapide" 
             className="h-10 w-auto"
           />
-          <span className="hidden font-bold sm:inline-block text-lg">
-            Consult-Rapide
-          </span>
         </Link>
 
         {/* Navigation desktop */}

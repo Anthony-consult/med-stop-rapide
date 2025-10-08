@@ -7,6 +7,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import {
   ClipboardCheck,
   FileText,
@@ -25,10 +26,16 @@ import {
   Phone,
   Mail,
   MapPin,
+  Heart,
 } from "lucide-react";
 
 export default function Home() {
   const navigate = useNavigate();
+
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
 
   const trustBadges = [
     {
@@ -224,41 +231,47 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Statistics Section - Modern Glass Effect - Overlapping Doctor Image */}
-            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-3/4 w-full max-w-2xl bg-white/90 backdrop-blur-xl border border-white/60 rounded-3xl p-6 md:p-8 text-center shadow-2xl z-20">
+            {/* Statistics Section - Mobile Only */}
+            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-3/4 w-full max-w-2xl bg-white/90 backdrop-blur-xl border border-white/60 rounded-2xl p-4 md:p-6 text-center shadow-2xl z-20 md:hidden">
               <div className="flex flex-col items-center">
-                <div className="w-14 h-14 md:w-16 md:h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mb-3 md:mb-4 shadow-xl rotate-3 hover:rotate-0 transition-transform duration-300">
-                  <FileText className="h-7 w-7 md:h-8 md:w-8 text-white" />
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg rotate-3 hover:rotate-0 transition-transform duration-300 flex-shrink-0">
+                  <FileText className="h-6 w-6 text-white" />
                 </div>
-                <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">800 000</div>
-                <div className="text-base md:text-lg text-gray-800 mb-4 md:mb-6 font-medium">certificats médicaux générés en France.</div>
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 md:w-10 md:h-10 bg-green-100 rounded-full flex items-center justify-center">
-                    <CheckCircle className="h-5 w-5 md:h-6 md:w-6 text-green-600" />
-                  </div>
-                  <div className="w-8 h-8 md:w-10 md:h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                    <Shield className="h-5 w-5 md:h-6 md:w-6 text-blue-600" />
-                  </div>
-                  <div className="w-8 h-8 md:w-10 md:h-10 bg-purple-100 rounded-full flex items-center justify-center">
-                    <Users className="h-5 w-5 md:h-6 md:w-6 text-purple-600" />
+                
+                {/* Stats content */}
+                <div className="flex-1">
+                  <div className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-1">800 000</div>
+                  <div className="text-sm text-gray-800 font-medium mb-3">certificats médicaux générés en France</div>
+                  
+                  {/* Trust badges */}
+                  <div className="flex items-center justify-center gap-2">
+                    <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
+                      <CheckCircle className="h-4 w-4 text-green-600" />
+                    </div>
+                    <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
+                      <Shield className="h-4 w-4 text-blue-600" />
+                    </div>
+                    <div className="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center">
+                      <Users className="h-4 w-4 text-purple-600" />
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Spacer for overlapping card */}
-          <div className="h-48 md:h-56"></div>
+          {/* Spacer for overlapping card - only needed on mobile */}
+          <div className="h-32 md:h-0"></div>
         </div>
       </section>
 
       {/* Process Section - Ultra Modern */}
-      <section id="process" className="py-16 md:py-24 bg-white relative">
+      <section id="process" className="py-12 md:py-20 bg-white relative">
         {/* Subtle gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-blue-50/20 via-transparent to-pink-50/20 pointer-events-none"></div>
         
         <div className="max-w-screen-lg mx-auto px-4 sm:px-6 relative z-10">
-          <div className="text-center mb-12 md:mb-16">
+          <div className="text-center mb-8 md:mb-12">
             <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-2 rounded-full mb-6 shadow-lg">
               <Sparkles className="h-4 w-4" />
               <span className="text-sm font-semibold">Simple & Rapide</span>
@@ -271,7 +284,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid gap-6 md:gap-8 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-4 md:gap-6 md:grid-cols-2 lg:grid-cols-4">
             {steps.map((step, index) => {
               const Icon = step.icon;
               return (
@@ -281,19 +294,19 @@ export default function Home() {
                     <div className="hidden md:block absolute top-16 left-full w-full h-0.5 bg-gradient-to-r from-purple-300 via-pink-300 to-purple-300 -z-10"></div>
                   )}
                   
-                  <div className="relative bg-white/80 backdrop-blur-lg p-8 rounded-3xl border border-gray-200 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 cursor-pointer hover:border-purple-200">
+                  <div className="relative bg-white/80 backdrop-blur-lg p-6 md:p-8 rounded-3xl border border-gray-200 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 cursor-pointer hover:border-purple-200 h-full flex flex-col">
                     {/* Number Badge */}
                     <div className="absolute -top-4 -right-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500 to-pink-600 text-white font-bold text-lg shadow-lg rotate-12 group-hover:rotate-0 transition-transform duration-300">
                     {index + 1}
                     </div>
                     
                     {/* Icon Container */}
-                    <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-purple-100 to-pink-100 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-purple-100 to-pink-100 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 flex-shrink-0">
                       <Icon className="h-8 w-8 text-purple-600" />
                     </div>
                     
-                    <h3 className="text-xl font-bold text-gray-900 mb-3 text-center">{step.title}</h3>
-                    <p className="text-gray-600 text-sm leading-relaxed text-center">{step.description}</p>
+                    <h3 className="text-xl font-bold text-gray-900 mb-3 text-center flex-shrink-0">{step.title}</h3>
+                    <p className="text-gray-600 text-sm leading-relaxed text-center flex-grow">{step.description}</p>
                   </div>
                 </div>
               );
@@ -303,10 +316,10 @@ export default function Home() {
       </section>
 
       {/* Benefits Section */}
-      <section className="py-12 md:py-20 bg-white relative">
+      <section className="py-8 md:py-16 bg-white relative">
         <div className="absolute inset-0 bg-gradient-to-b from-pink-50/20 via-transparent to-blue-50/20 pointer-events-none"></div>
         <div className="max-w-screen-lg mx-auto px-4 sm:px-6 relative z-10">
-          <div className="text-center mb-12">
+          <div className="text-center mb-8">
             <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent mb-4">
               Pourquoi choisir<br />
               <span className="text-blue-600">Consult-Rapide</span>
@@ -325,7 +338,7 @@ export default function Home() {
       </section>
 
       {/* Compliance Section */}
-      <section className="py-12 md:py-20 bg-white relative">
+      <section className="py-8 md:py-16 bg-white relative">
         <div className="absolute inset-0 bg-gradient-to-b from-blue-50/20 via-transparent to-pink-50/20 pointer-events-none"></div>
         <div className="max-w-screen-lg mx-auto px-4 sm:px-6 relative z-10">
           <Card className="p-8 md:p-10 bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30 backdrop-blur-xl border border-white/60 shadow-2xl hover:shadow-3xl transition-all duration-500">
@@ -364,10 +377,10 @@ export default function Home() {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-12 md:py-20 bg-white relative">
+      <section className="py-8 md:py-16 bg-white relative">
         <div className="absolute inset-0 bg-gradient-to-b from-pink-50/20 via-transparent to-blue-50/20 pointer-events-none"></div>
         <div className="max-w-screen-lg mx-auto px-4 sm:px-6 relative z-10">
-          <div className="text-center mb-12">
+          <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-2 rounded-full mb-6 shadow-lg">
               <Headphones className="h-4 w-4" />
               <span className="text-sm font-semibold">Support & FAQ</span>
@@ -401,7 +414,7 @@ export default function Home() {
       </section>
 
       {/* Final CTA */}
-      <section className="py-12 md:py-20 bg-white relative">
+      <section className="py-8 md:py-16 bg-white relative">
         <div className="absolute inset-0 bg-gradient-to-b from-blue-50/20 via-transparent to-pink-50/20 pointer-events-none"></div>
         <div className="max-w-screen-lg mx-auto px-4 sm:px-6 relative z-10">
           <Card className="p-8 md:p-12 text-center bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30 backdrop-blur-xl border border-white/60 shadow-2xl hover:shadow-3xl transition-all duration-500">
@@ -471,9 +484,9 @@ export default function Home() {
                   <Lock className="h-4 w-4 group-hover:scale-110 transition-transform" />
                   Politique de confidentialité
                 </a>
-                <a href="/contact" className="group flex items-center gap-2 text-gray-300 hover:text-white transition-colors">
-                  <Mail className="h-4 w-4 group-hover:scale-110 transition-transform" />
-                  Contact
+                <a href="/a-propos" className="group flex items-center gap-2 text-gray-300 hover:text-white transition-colors">
+                  <Heart className="h-4 w-4 group-hover:scale-110 transition-transform" />
+                  À propos
                 </a>
               </div>
             </div>
