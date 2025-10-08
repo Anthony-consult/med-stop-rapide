@@ -101,7 +101,12 @@ export function Step20({ form, onNext, onPrev, formData }: StepComponentProps<St
       const consultationId = savedData.id;
       const stripeUrl = `https://buy.stripe.com/test_aFa6oHfLFcnDgJ8eHY4Ja00?client_reference_id=${consultationId}`;
       
+      console.log('🔗 REDIRECTION STRIPE');
+      console.log('🔗 Consultation ID:', consultationId);
+      console.log('🔗 Stripe URL:', stripeUrl);
+      
       setTimeout(() => {
+        console.log('🚀 Redirecting to Stripe...');
         window.location.href = stripeUrl;
       }, 1500);
 
