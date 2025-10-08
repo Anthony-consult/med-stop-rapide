@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef, useState, useEffect } from 'react';
 import { gsap } from 'gsap';
 import { GoArrowUpRight } from 'react-icons/go';
+import { ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 interface CardNavProps {
@@ -215,7 +216,7 @@ const CardNav = ({
           </div>
 
           <div className="logo-container flex items-center justify-center flex-1 order-1 md:absolute md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:order-none">
-            <img src={logo} alt={logoAlt} className="logo h-[28px]" />
+            <img src={logo} alt={logoAlt} className="logo h-[36px]" />
           </div>
 
           <div className="w-12 md:hidden"></div>
@@ -223,10 +224,10 @@ const CardNav = ({
           <button
             type="button"
             onClick={() => navigate('/consultation')}
-            className="card-nav-cta-button hidden md:inline-flex border-0 rounded-[calc(0.75rem-0.2rem)] px-4 h-full font-medium cursor-pointer transition-colors duration-300"
-            style={{ backgroundColor: buttonBgColor, color: buttonTextColor }}
+            className="card-nav-cta-button hidden md:inline-flex border-0 rounded-[calc(0.75rem-0.2rem)] px-6 h-full font-medium cursor-pointer transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white items-center justify-center gap-2"
           >
-            Commencer la démarche
+            <span>Commencer maintenant</span>
+            <ArrowRight className="h-4 w-4" />
           </button>
         </div>
 

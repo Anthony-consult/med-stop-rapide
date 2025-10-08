@@ -107,7 +107,7 @@ export default function Home() {
       answer: "Oui. La téléconsultation est encadrée en France et nos médecins sont inscrits à l'Ordre.",
     },
     {
-      question: "Quand ne pas utiliser Consult-Rapide ?",
+      question: "Quand ne pas utiliser Consult-Chrono ?",
       answer: "En cas de symptômes graves ou d'urgence, appelez immédiatement le 15.",
     },
   ];
@@ -147,7 +147,7 @@ export default function Home() {
       {/* Card Navigation */}
       <CardNav
         logo="/logo-big.png"
-        logoAlt="Consult-Rapide Logo"
+        logoAlt="Consult-Chrono Logo"
         items={navItems}
         baseColor="#fff"
         menuColor="#000"
@@ -182,7 +182,7 @@ export default function Home() {
             </h1>
               
               <p className="text-base md:text-lg text-gray-700 mb-8 leading-relaxed">
-                Bienvenue sur <span className="font-semibold text-blue-600">Consult-Rapide</span>, la plateforme innovante offrant un diagnostic instantané et un arrêt de travail légal en quelques clics. Pour seulement <span className="font-bold text-pink-600">21€</span>, nos 323 médecins partenaires qualifiés vous délivrent votre arrêt sans quitter votre domicile.
+                Bienvenue sur <span className="font-semibold text-blue-600">Consult-Chrono</span>, la plateforme innovante offrant un diagnostic instantané et un arrêt de travail légal en quelques clics. Pour seulement <span className="font-bold text-pink-600">21€</span>, nos 323 médecins partenaires qualifiés vous délivrent votre arrêt sans quitter votre domicile.
               </p>
               
               {/* CTA Buttons - Ultra Modern */}
@@ -370,7 +370,7 @@ export default function Home() {
           <div className="text-center mb-8">
             <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent mb-4">
               Pourquoi choisir<br />
-              <span className="text-blue-600">Consult-Rapide</span>
+              <span className="text-blue-600">Consult-Chrono</span>
             </h2>
           </div>
 
@@ -409,7 +409,7 @@ export default function Home() {
                   Vos données de santé sont traitées avec la plus grande confidentialité. Nos médecins sont légalement habilités à délivrer un arrêt maladie lorsque cela est justifié. En cas d'urgence, appelez le 15.
                 </p>
                 <div className="flex flex-wrap gap-6">
-                  <a href="/privacy" className="group flex items-center gap-2 text-blue-600 hover:text-blue-700 font-semibold transition-colors">
+                  <a href="/terms" className="group flex items-center gap-2 text-blue-600 hover:text-blue-700 font-semibold transition-colors">
                     <Lock className="h-4 w-4 group-hover:scale-110 transition-transform" />
                     Politique de confidentialité
                   </a>
@@ -508,11 +508,8 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             {/* Logo & Description */}
             <div className="md:col-span-1">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
-                  <Stethoscope className="h-6 w-6 text-white" />
-                </div>
-                <span className="text-2xl font-bold">Consult-Rapide</span>
+              <div className="flex items-center mb-4">
+                <img src="/logo-big-white.png" alt="Consult-Chrono" className="h-10" />
               </div>
               <p className="text-gray-300 text-sm leading-relaxed">
                 Plateforme de télémédecine certifiée pour obtenir votre arrêt maladie en ligne, 24h/24, 7j/7.
@@ -527,7 +524,7 @@ export default function Home() {
                   <FileText className="h-4 w-4 group-hover:scale-110 transition-transform" />
                   Mentions légales
                 </a>
-                <a href="/privacy" className="group flex items-center gap-2 text-gray-300 hover:text-white transition-colors">
+                <a href="/terms" className="group flex items-center gap-2 text-gray-300 hover:text-white transition-colors">
                   <Lock className="h-4 w-4 group-hover:scale-110 transition-transform" />
                   Politique de confidentialité
                 </a>
@@ -561,7 +558,7 @@ export default function Home() {
           <div className="border-t border-white/20 pt-6">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
               <div className="text-sm text-gray-400">
-                © {new Date().getFullYear()} Consult-Rapide. Tous droits réservés.
+                © {new Date().getFullYear()} Consult-Chrono. Tous droits réservés.
               </div>
               <div className="flex items-center gap-4 text-xs text-gray-400">
                 <span>Cabinet de télémédecine</span>

@@ -126,7 +126,7 @@ export default function APropos() {
       {/* Card Navigation */}
       <CardNav
         logo="/logo-big.png"
-        logoAlt="Consult-Rapide Logo"
+        logoAlt="Consult-Chrono Logo"
         items={navItems}
         baseColor="#fff"
         menuColor="#000"
@@ -152,7 +152,7 @@ export default function APropos() {
               Simplifier les démarches administratives
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Chez Consult-Rapide, nous vous aidons à naviguer dans les formulaires administratifs complexes de France. 
+              Chez Consult-Chrono, nous vous aidons à naviguer dans les formulaires administratifs complexes de France. 
               Notre service vous guide étape par étape pour obtenir les documents officiels dont vous avez besoin, 
               de manière simple, rapide et entièrement légale.
             </p>
@@ -378,7 +378,7 @@ export default function APropos() {
                     </p>
                     <Button
                       onClick={() => {
-                        window.location.href = 'mailto:contact@consult-rapide.fr';
+                        window.location.href = 'mailto:contact@consult-chrono.fr';
                       }}
                       className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 rounded-xl font-semibold"
                     >
