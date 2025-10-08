@@ -25,7 +25,12 @@ SMTP_PASS=your-smtp-password
 
 ### 🚀 Resend (Option B - Optionnel)
 ```bash
-RESEND_API_KEY=re_...
+RESEND_API_KEY=re_your_api_key_here
+```
+
+### 📬 Email (Optionnel)
+```bash
+ALERT_RECIPIENT=contact@consult-chrono.fr  # Destinataire des notifications (défaut: contact@consult-chrono.fr)
 ```
 
 ## 🎯 Endpoint Webhook
@@ -99,12 +104,29 @@ CREATE TRIGGER new_lead_notification
   EXECUTE FUNCTION notify_new_lead();
 ```
 
-## 📧 Template d'Email
+## 📧 Template d'Email Professionnel
 
-L'endpoint envoie un email avec :
+L'endpoint envoie un email HTML professionnel avec :
+
+### ✨ Fonctionnalités
 - **Sujet :** "Nouvelle demande – [Prénom] [Nom]"
-- **Contenu :** JSON formaté de toutes les données de la demande
-- **Destinataire :** contact@consult-chrono.fr
+- **Format :** HTML + texte brut + CSV en pièce jointe
+- **Design :** Template moderne avec branding Consult-Chrono
+- **Sécurité :** Masquage des champs sensibles (NIR, sécurité sociale)
+- **Responsive :** Compatible Gmail, Apple Mail, Outlook
+
+### 📋 Contenu
+- **Section Résumé :** Nom, Email, Date, Statut paiement
+- **Section Détails :** Toutes les données de la consultation
+- **Badge PAYÉ :** Affiché si `payment_status === "done"`
+- **Logo :** Intégré dans l'en-tête
+- **Pièce jointe CSV :** Export complet des données
+
+### 🎨 Design
+- Couleurs du site (#0A6ABF, gradients)
+- Typographie système (compatible email)
+- Bordures et espacements optimisés
+- Footer avec mentions légales
 
 ## 🚀 Déploiement
 

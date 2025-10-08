@@ -1,144 +1,15 @@
-// Vercel Serverless Function for webhook endpoint
-// Deploy this to Vercel Functions or similar serverless platform
+import { formatKey, formatValue, formatDateISO } from './format';
 
-import nodemailer from "nodemailer";
-import { Resend } from "resend";
-
-// Env vars
-const WEBHOOK_TOKEN = process.env.SUPABASE_WEBHOOK_TOKEN; // required
-const TO = process.env.ALERT_RECIPIENT || "contact@consult-chrono.fr"; // recipient
-
-// SMTP Hostinger (Option A)
-const SMTP_HOST = process.env.SMTP_HOST;      // e.g. "smtp.hostinger.com"
-const SMTP_PORT = Number(process.env.SMTP_PORT || "465");
-const SMTP_USER = process.env.SMTP_USER;      // e.g. "contact@consult-chrono.fr"
-const SMTP_PASS = process.env.SMTP_PASS;
-
-// Resend (Option B)
-const RESEND_API_KEY = process.env.RESEND_API_KEY;
-
-export default async function handler(req, res) {
-  // Only allow POST requests
-  if (req.method !== 'POST') {
-    return res.status(405).json({ ok: false, error: 'Method not allowed' });
-  }
-
-  try {
-    // Security: shared token
-    const token = req.headers['x-webhook-token'];
-    if (!WEBHOOK_TOKEN || token !== WEBHOOK_TOKEN) {
-      return res.status(401).json({ ok: false, error: 'Unauthorized' });
-    }
-
-    const body = req.body;
-    const record = body?.record ?? {};
-
-    const subject = `Nouvelle demande – ${safe(record?.prenom)} ${safe(record?.nom)}`.trim();
-    const { html, text, csv } = renderConsultEmail(record);
-
-    if (RESEND_API_KEY) {
-      // Option B: Resend
-      const resend = new Resend(RESEND_API_KEY);
-      await resend.emails.send({
-        from: "Consult-Chrono <notifications@consult-chrono.fr>",
-        to: [TO],
-        subject,
-        html,
-        text,
-        attachments: csv ? [{
-          filename: `consultation_${record.id ?? 'data'}.csv`,
-          content: csv,
-          contentType: 'text/csv'
-        }] : undefined,
-      });
-    } else {
-      // Option A: SMTP Hostinger (default)
-      const transporter = nodemailer.createTransport({
-        host: SMTP_HOST,
-        port: SMTP_PORT,
-        secure: SMTP_PORT === 465, // true for 465, false for 587
-        auth: { user: SMTP_USER, pass: SMTP_PASS },
-      });
-
-      await transporter.sendMail({
-        from: `Consult-Chrono <${SMTP_USER}>`,
-        to: TO,
-        subject,
-        html,
-        text,
-        attachments: csv ? [{
-          filename: `consultation_${record.id ?? 'data'}.csv`,
-          content: csv,
-          contentType: 'text/csv'
-        }] : undefined,
-      });
-    }
-
-    return res.status(200).json({ ok: true });
-  } catch (err) {
-    console.error("Webhook error:", err);
-    return res.status(500).json({ ok: false, error: err?.message ?? "unknown" });
-  }
+export interface EmailResult {
+  html: string;
+  text: string;
+  csv?: Buffer;
 }
 
-// Email rendering functions
-function safe(v) {
-  return typeof v === "string" ? v : v == null ? "" : String(v);
-}
-
-function formatKey(key) {
-  if (!key || typeof key !== 'string') return '';
-  return key
-    .replace(/_/g, ' ')
-    .replace(/\b\w/g, (char) => char.toUpperCase());
-}
-
-function formatDateISO(date) {
-  if (!date) return '';
-  try {
-    const dateObj = typeof date === 'string' ? new Date(date) : date;
-    if (isNaN(dateObj.getTime())) return '';
-    
-    return new Intl.DateTimeFormat('fr-FR', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      timeZone: 'Europe/Paris'
-    }).format(dateObj);
-  } catch (error) {
-    return '';
-  }
-}
-
-function shouldMaskField(key) {
-  if (!key || typeof key !== 'string') return false;
-  const lowerKey = key.toLowerCase();
-  return lowerKey.includes('nir') || lowerKey.includes('securite_sociale');
-}
-
-function maskSensitive(value) {
-  if (!value || typeof value !== 'string') return '';
-  if (value.length <= 5) return value;
-  
-  const start = value.slice(0, 3);
-  const end = value.slice(-2);
-  const middle = '*'.repeat(Math.max(0, value.length - 5));
-  return `${start}${middle}${end}`;
-}
-
-function formatValue(key, value) {
-  if (value === null || value === undefined || value === '') return '';
-  const stringValue = String(value);
-  
-  if (shouldMaskField(key)) {
-    return maskSensitive(stringValue);
-  }
-  return stringValue;
-}
-
-function renderConsultEmail(record) {
+/**
+ * Renders a consultation email with HTML, text, and CSV formats
+ */
+export function renderConsultEmail(record: Record<string, any>): EmailResult {
   const html = renderHTML(record);
   const text = renderText(record);
   const csv = renderCSV(record);
@@ -146,9 +17,12 @@ function renderConsultEmail(record) {
   return { html, text, csv };
 }
 
-function renderHTML(record) {
+/**
+ * Renders HTML email template
+ */
+function renderHTML(record: Record<string, any>): string {
   const paymentStatus = record.payment_status === 'done';
-  const hasLogo = true;
+  const hasLogo = true; // Assume logo exists in public folder
   
   const summaryFields = [
     { key: 'nom', label: 'Nom' },
@@ -161,8 +35,10 @@ function renderHTML(record) {
   const allFields = Object.entries(record)
     .filter(([key, value]) => value !== null && value !== undefined && value !== '')
     .sort(([a], [b]) => {
+      // Put summary fields first
       const aIndex = summaryFields.findIndex(f => f.key === a);
       const bIndex = summaryFields.findIndex(f => f.key === b);
+      
       if (aIndex !== -1 && bIndex !== -1) return aIndex - bIndex;
       if (aIndex !== -1) return -1;
       if (bIndex !== -1) return 1;
@@ -264,13 +140,17 @@ function renderHTML(record) {
   `;
 }
 
-function renderText(record) {
-  const lines = [];
+/**
+ * Renders plain text version
+ */
+function renderText(record: Record<string, any>): string {
+  const lines: string[] = [];
   
   lines.push('NOUVELLE DEMANDE – CONSULT-CHRONO');
   lines.push('='.repeat(40));
   lines.push('');
   
+  // Summary fields first
   const summaryFields = ['nom', 'prenom', 'email', 'created_at', 'payment_status'];
   
   summaryFields.forEach(key => {
@@ -285,6 +165,7 @@ function renderText(record) {
   lines.push('DÉTAILS COMPLETS:');
   lines.push('-'.repeat(20));
   
+  // All other fields
   Object.entries(record)
     .filter(([key, value]) => value !== null && value !== undefined && value !== '')
     .filter(([key]) => !summaryFields.includes(key))
@@ -301,15 +182,20 @@ function renderText(record) {
   return lines.join('\n');
 }
 
-function renderCSV(record) {
+/**
+ * Renders CSV attachment
+ */
+function renderCSV(record: Record<string, any>): Buffer {
   const entries = Object.entries(record)
     .filter(([key, value]) => value !== null && value !== undefined && value !== '')
     .sort(([a], [b]) => a.localeCompare(b));
   
+  // CSV with semicolon delimiter and UTF-8 BOM for Excel compatibility
   const header = 'Champ;Valeur\n';
   const rows = entries.map(([key, value]) => {
     const label = formatKey(key);
     const formattedValue = formatValue(key, value);
+    // Escape semicolons and quotes in CSV
     const escapedLabel = `"${label.replace(/"/g, '""')}"`;
     const escapedValue = `"${formattedValue.replace(/"/g, '""')}"`;
     return `${escapedLabel};${escapedValue}`;
