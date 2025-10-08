@@ -22,7 +22,11 @@ export const config = {
 };
 
 export default async function handler(req, res) {
+  console.log('🔔 Webhook called - Method:', req.method);
+  console.log('🔔 Headers:', JSON.stringify(req.headers, null, 2));
+  
   if (req.method !== 'POST') {
+    console.log('❌ Wrong method:', req.method);
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
@@ -30,6 +34,9 @@ export default async function handler(req, res) {
   const buf = await buffer(req);
   const sig = req.headers['stripe-signature'];
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+  console.log('🔑 Webhook secret exists:', !!webhookSecret);
+  console.log('🔑 Signature exists:', !!sig);
 
   if (!webhookSecret) {
     console.error('❌ STRIPE_WEBHOOK_SECRET not configured');
@@ -40,31 +47,49 @@ export default async function handler(req, res) {
 
   try {
     // Verify webhook signature
+    console.log('🔐 Verifying signature...');
     event = stripe.webhooks.constructEvent(buf, sig, webhookSecret);
+    console.log('✅ Signature verified successfully');
   } catch (err) {
     console.error('❌ Webhook signature verification failed:', err.message);
+    console.error('❌ Error details:', err);
     return res.status(400).json({ error: `Webhook Error: ${err.message}` });
   }
 
   // Handle the event
   console.log('📥 Stripe webhook event:', event.type);
+  console.log('📥 Event ID:', event.id);
+  console.log('📥 Event data:', JSON.stringify(event.data, null, 2));
 
   try {
     switch (event.type) {
       case 'checkout.session.completed': {
         const session = event.data.object;
         
+        console.log('💰 CHECKOUT SESSION COMPLETED');
+        console.log('💰 Session ID:', session.id);
+        console.log('💰 Payment status:', session.payment_status);
+        console.log('💰 Client reference ID:', session.client_reference_id);
+        console.log('💰 Payment intent:', session.payment_intent);
+        console.log('💰 Full session object:', JSON.stringify(session, null, 2));
+        
         // Get consultation ID from client_reference_id
         const consultationId = session.client_reference_id;
         const paymentIntentId = session.payment_intent;
         
-        console.log('✅ Payment successful for consultation:', consultationId);
+        console.log('🔍 Extracted consultation ID:', consultationId);
+        console.log('🔍 Extracted payment intent ID:', paymentIntentId);
         
         if (!consultationId) {
           console.error('❌ No consultation ID found in session');
+          console.error('❌ Session keys:', Object.keys(session));
           return res.status(400).json({ error: 'No consultation ID' });
         }
 
+        console.log('📝 Attempting to update Supabase...');
+        console.log('📝 Supabase URL:', process.env.VITE_SUPABASE_URL);
+        console.log('📝 Service role key exists:', !!process.env.SUPABASE_SERVICE_ROLE_KEY);
+        
         // Update consultation payment status
         const { data, error } = await supabase
           .from('consultations')
@@ -77,11 +102,16 @@ export default async function handler(req, res) {
           .single();
 
         if (error) {
-          console.error('❌ Error updating payment status:', error);
+          console.error('❌ SUPABASE ERROR:', error);
+          console.error('❌ Error code:', error.code);
+          console.error('❌ Error message:', error.message);
+          console.error('❌ Error details:', error.details);
+          console.error('❌ Error hint:', error.hint);
           throw error;
         }
 
-        console.log('✅ Payment status updated:', data);
+        console.log('✅ PAYMENT STATUS UPDATED SUCCESSFULLY!');
+        console.log('✅ Updated data:', JSON.stringify(data, null, 2));
         
         break;
       }
