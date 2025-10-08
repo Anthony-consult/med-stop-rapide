@@ -19,6 +19,7 @@ export interface StepComponentProps<T extends FieldValues = FieldValues> {
   form: UseFormReturn<T>;
   onNext: () => void;
   onPrev?: () => void;
+  formData?: Partial<ConsultationFormData>;
 }
 
 interface FormWizardProps {
@@ -89,7 +90,7 @@ export function FormWizard({ steps, onComplete }: FormWizardProps) {
       <div className="flex-1 overflow-y-auto pb-32">
         {isPaymentStep ? (
           // Payment step has its own full-screen layout
-          <StepComponent form={form} onNext={handleNext} onPrev={handlePrev} />
+          <StepComponent form={form} onNext={handleNext} onPrev={handlePrev} formData={formData} />
         ) : (
           // Regular steps use the standard layout
           <div className="max-w-sm mx-auto px-4 py-6">
@@ -107,7 +108,7 @@ export function FormWizard({ steps, onComplete }: FormWizardProps) {
 
             {/* Step content in card */}
             <div className="bg-white rounded-2xl border border-gray-200 shadow-md p-6">
-              <StepComponent form={form} onNext={handleNext} />
+              <StepComponent form={form} onNext={handleNext} formData={formData} />
             </div>
           </div>
         )}

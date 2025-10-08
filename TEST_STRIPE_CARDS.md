@@ -58,7 +58,7 @@ Utilisez les cartes de test ci-dessous pour effectuer des paiements fictifs.
 
 1. **Remplir** le formulaire (toutes les étapes)
 2. **Arriver** à la page de paiement (Step 20)
-3. **Cliquer** : "Payer 21,00 €"
+3. **Cliquer** : "Payer 14,00 €"
 4. **Utiliser** : `4242 4242 4242 4242`
 5. **Vérifier** :
    - ✅ Redirection vers `/payment/success`
@@ -69,7 +69,7 @@ Utilisez les cartes de test ci-dessous pour effectuer des paiements fictifs.
 
 1. **Remplir** le formulaire
 2. **Arriver** à la page de paiement
-3. **Cliquer** : "Payer 21,00 €"
+3. **Cliquer** : "Payer 14,00 €"
 4. **Utiliser** : `4000 0000 0000 0002`
 5. **Vérifier** :
    - ❌ Message d'erreur Stripe
@@ -80,7 +80,7 @@ Utilisez les cartes de test ci-dessous pour effectuer des paiements fictifs.
 
 1. **Remplir** le formulaire
 2. **Arriver** à la page de paiement
-3. **Cliquer** : "Payer 21,00 €"
+3. **Cliquer** : "Payer 14,00 €"
 4. **Sur Stripe** : Cliquer le bouton "Retour" ou fermer l'onglet
 5. **Vérifier** :
    - 🔙 Redirection vers Cancel URL
@@ -102,7 +102,7 @@ Utilisez les cartes de test ci-dessous pour effectuer des paiements fictifs.
 ### Vérifier un Paiement
 
 Pour chaque paiement, vérifiez :
-- ✅ **Montant** : 21,00 €
+- ✅ **Montant** : 14,00 €
 - ✅ **Statut** : Succeeded
 - ✅ **Metadata** : `client_reference_id` = UUID de la consultation
 - ✅ **Customer Email** : Email saisi dans le formulaire

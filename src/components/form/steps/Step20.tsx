@@ -1,23 +1,26 @@
 import { Controller } from "react-hook-form";
 import { useState } from "react";
 import { StepComponentProps } from "../FormWizard";
-import { step20Schema } from "@/lib/validation/consultation-schema";
+import { step20Schema, ConsultationFormData } from "@/lib/validation/consultation-schema";
 import { z } from "zod";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { clearFormData } from "@/lib/storage";
 
 type Step20Data = z.infer<typeof step20Schema>;
 
-export function Step20({ form, onNext, onPrev }: StepComponentProps<Step20Data>) {
+export function Step20({ form, onNext, onPrev, formData }: StepComponentProps<Step20Data>) {
   const { control, formState: { errors } } = form;
   const { toast } = useToast();
   
   const [termsChecked, setTermsChecked] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Simple pricing
-  const total = 21.00;
+  const total = 14.00;
 
   // Currency formatter
   const currency = new Intl.NumberFormat('fr-FR', { 
@@ -35,21 +38,84 @@ export function Step20({ form, onNext, onPrev }: StepComponentProps<Step20Data>)
       return;
     }
 
-    // Get consultation ID from localStorage (set by FormWizard after save)
-    const consultationId = localStorage.getItem('consultation_id');
-    
-    if (!consultationId) {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+
+    try {
+      // Get all form data from formData prop
+      const allFormData = formData as ConsultationFormData;
+      
+      console.log("📝 Sauvegarde des données dans Supabase...", allFormData);
+
+      // Prepare data for Supabase
+      const consultationData = {
+        maladie_presumee: allFormData.maladie_presumee,
+        symptomes: allFormData.symptomes,
+        diagnostic_anterieur: allFormData.diagnostic_anterieur,
+        autres_symptomes: allFormData.autres_symptomes,
+        zones_douleur: allFormData.zones_douleur,
+        apparition_soudaine: allFormData.apparition_soudaine,
+        medicaments_reguliers: allFormData.medicaments_reguliers,
+        facteurs_risque: allFormData.facteurs_risque?.length > 0,
+        type_arret: allFormData.type_arret,
+        profession: allFormData.profession,
+        date_debut: allFormData.date_debut?.toISOString().split('T')[0],
+        date_fin: allFormData.date_fin?.toISOString().split('T')[0],
+        date_fin_lettres: allFormData.date_fin_lettres,
+        nom_prenom: allFormData.nom_prenom,
+        date_naissance: allFormData.date_naissance?.toISOString().split('T')[0],
+        email: allFormData.email,
+        adresse: allFormData.adresse,
+        code_postal: allFormData.code_postal,
+        ville: allFormData.ville,
+        pays: allFormData.pays,
+        situation_pro: allFormData.situation_pro,
+        localisation_medecin: allFormData.localisation_medecin,
+        numero_securite_sociale: allFormData.numero_securite_sociale,
+        conditions_acceptees: termsChecked,
+        payment_status: "pending",
+      };
+
+      const { data: savedData, error } = await supabase
+        .from("consultations")
+        .insert([consultationData])
+        .select()
+        .single();
+
+      if (error) {
+        console.error("❌ Erreur Supabase:", error);
+        throw error;
+      }
+
+      console.log("✅ Consultation sauvegardée:", savedData);
+
+      // Clear form data
+      clearFormData();
+
       toast({
-        title: "Erreur",
-        description: "Impossible de récupérer l'ID de consultation.",
+        title: "✅ Consultation enregistrée",
+        description: "Redirection vers le paiement de 14 €...",
+      });
+
+      // Redirect to Stripe payment with consultation ID
+      const consultationId = savedData.id;
+      const stripeUrl = `https://buy.stripe.com/test_aFa6oHfLFcnDgJ8eHY4Ja00?client_reference_id=${consultationId}`;
+      
+      setTimeout(() => {
+        window.location.href = stripeUrl;
+      }, 1500);
+
+    } catch (error) {
+      console.error("❌ Erreur lors de la sauvegarde:", error);
+      
+      toast({
+        title: "❌ Erreur",
+        description: "Impossible d'enregistrer votre consultation. Veuillez réessayer.",
         variant: "destructive",
       });
-      return;
+      
+      setIsSubmitting(false);
     }
-
-    // Redirect to Stripe payment with consultation ID in client_reference_id
-    const stripeUrl = `https://buy.stripe.com/test_aFa6oHfLFcnDgJ8eHY4Ja00?client_reference_id=${consultationId}`;
-    window.location.href = stripeUrl;
   };
 
   const handleGoBack = () => {
@@ -84,7 +150,7 @@ export function Step20({ form, onNext, onPrev }: StepComponentProps<Step20Data>)
           
           <div className="space-y-3">
             <div className="flex justify-between items-center">
-              <span className="text-gray-600">Traitement du dossier médical</span>
+              <span className="text-gray-600">Arrêt maladie</span>
               <span className="font-medium">{currency.format(total)}</span>
             </div>
             <div className="flex justify-between items-center">

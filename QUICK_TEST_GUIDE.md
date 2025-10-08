@@ -36,11 +36,11 @@ Date fin : Dans 3 jours
 ## 💳 Étape 2 : Payer avec Stripe (1 min)
 
 1. **Vérifier** l'affichage :
-   - ✅ Montant : 21,00 €
+   - ✅ Montant : 14,00 €
    - ✅ Récapitulatif visible
    - ✅ CGU cochable
 
-2. **Cliquer** : "Payer 21,00 €"
+2. **Cliquer** : "Payer 14,00 €"
 
 3. **Sur Stripe**, entrer :
    ```
@@ -74,7 +74,7 @@ Date fin : Dans 3 jours
 1. **Ouvrir** : Stripe Dashboard (mode TEST) → Payments
 2. **Vérifier** le dernier paiement :
    ```
-   ✅ Montant : €21.00
+   ✅ Montant : €14.00
    ✅ Statut : Succeeded
    ✅ Metadata : client_reference_id = UUID
    ```

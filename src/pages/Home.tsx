@@ -182,7 +182,7 @@ export default function Home() {
             </h1>
               
               <p className="text-base md:text-lg text-gray-700 mb-8 leading-relaxed">
-                Bienvenue sur <span className="font-semibold text-blue-600">Consult-Chrono</span>, la plateforme innovante offrant un diagnostic instantané et un arrêt de travail légal en quelques clics. Pour seulement <span className="font-bold text-pink-600">21€</span>, nos 323 médecins partenaires qualifiés vous délivrent votre arrêt sans quitter votre domicile.
+                Bienvenue sur <span className="font-semibold text-blue-600">Consult-Chrono</span>, la plateforme innovante offrant un diagnostic instantané et un arrêt de travail légal en quelques clics. Pour seulement <span className="font-bold text-pink-600">14€</span>, nos 323 médecins partenaires qualifiés vous délivrent votre arrêt sans quitter votre domicile.
               </p>
               
               {/* CTA Buttons - Ultra Modern */}
@@ -250,7 +250,7 @@ export default function Home() {
               <div className="w-32 h-32 md:w-40 md:h-40 animate-bounce-slow drop-shadow-2xl">
                 <img
                   src="/tarif-bubble.png"
-                  alt="Tarif 21€"
+                  alt="Tarif 14€"
                   className="w-full h-full object-contain"
                 />
               </div>

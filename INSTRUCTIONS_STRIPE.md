@@ -111,11 +111,11 @@ Vercel déploiera automatiquement. Attendez quelques minutes.
 3. **Remplissez** le formulaire (toutes les étapes)
 4. **Arrivez** à la page de paiement (Step 20)
 5. **Vérifiez** :
-   - ✅ Le récapitulatif affiche 21,00 €
+   - ✅ Le récapitulatif affiche 14,00 €
    - ✅ Les CGU sont cochables
-   - ✅ Le bouton "Payer 21,00 €" est actif
+   - ✅ Le bouton "Payer 14,00 €" est actif
 
-6. **Cliquez** : "Payer 21,00 €"
+6. **Cliquez** : "Payer 14,00 €"
 7. **Vérifiez** : Redirection vers Stripe
 8. **Testez avec carte de test** :
    - **Numéro** : `4242 4242 4242 4242`
@@ -141,7 +141,7 @@ Vercel déploiera automatiquement. Attendez quelques minutes.
 1. **Allez dans** : Stripe Dashboard → Payments
 2. **Trouvez** : Votre paiement de test
 3. **Vérifiez** :
-   - ✅ Montant : 21,00 €
+   - ✅ Montant : 14,00 €
    - ✅ Statut : Succeeded
    - ✅ Metadata : `client_reference_id` = ID de consultation
 

@@ -179,80 +179,16 @@ export default function ConsultationNew() {
     {
       id: 19,
       title: "Paiement sécurisé",
-      description: "21 € TTC - Remboursé si non éligible",
+      description: "14 € TTC - Remboursé si non éligible",
       schema: step20Schema,
       component: Step20,
     },
   ];
 
   const handleComplete = async (data: ConsultationFormData) => {
-    try {
-      console.log("📝 Sauvegarde des données dans Supabase...", data);
-
-      // Prepare data for Supabase (convert arrays and dates to proper format)
-      const consultationData = {
-        maladie_presumee: data.maladie_presumee,
-        symptomes: data.symptomes,
-        diagnostic_anterieur: data.diagnostic_anterieur,
-        autres_symptomes: data.autres_symptomes,
-        zones_douleur: data.zones_douleur,
-        apparition_soudaine: data.apparition_soudaine,
-        medicaments_reguliers: data.medicaments_reguliers,
-        facteurs_risque: data.facteurs_risque?.length > 0,
-        type_arret: data.type_arret,
-        profession: data.profession,
-        date_debut: data.date_debut?.toISOString().split('T')[0],
-        date_fin: data.date_fin?.toISOString().split('T')[0],
-        date_fin_lettres: data.date_fin_lettres,
-        nom_prenom: data.nom_prenom,
-        date_naissance: data.date_naissance?.toISOString().split('T')[0],
-        email: data.email,
-        adresse: data.adresse,
-        code_postal: data.code_postal,
-        ville: data.ville,
-        pays: data.pays,
-        situation_pro: data.situation_pro,
-        localisation_medecin: data.localisation_medecin,
-        numero_securite_sociale: data.numero_securite_sociale,
-        conditions_acceptees: data.conditions_acceptees,
-        payment_status: "pending",
-      };
-
-      const { data: savedData, error } = await supabase
-        .from("consultations")
-        .insert([consultationData])
-        .select()
-        .single();
-
-      if (error) {
-        console.error("❌ Erreur Supabase:", error);
-        throw error;
-      }
-
-      console.log("✅ Consultation sauvegardée:", savedData);
-
-      // Save consultation ID for payment
-      localStorage.setItem('consultation_id', savedData.id);
-
-      // Clear form data but keep consultation_id
-      clearFormData();
-
-      toast({
-        title: "✅ Consultation enregistrée",
-        description: "Redirection vers le paiement...",
-      });
-
-      // Proceed to payment step (onNext will be called, which shows Step20)
-
-    } catch (error) {
-      console.error("❌ Erreur lors de la sauvegarde:", error);
-      
-      toast({
-        title: "❌ Erreur",
-        description: "Impossible d'enregistrer votre consultation. Veuillez réessayer.",
-        variant: "destructive",
-      });
-    }
+    // This is called when Step20 is validated
+    // Step20 will handle the Stripe redirection itself
+    console.log("Form completed, Step20 will handle payment redirection");
   };
 
   return <FormWizard steps={steps} onComplete={handleComplete} />;

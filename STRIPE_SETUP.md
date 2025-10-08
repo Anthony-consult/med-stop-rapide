@@ -65,7 +65,7 @@ SUPABASE_SERVICE_ROLE_KEY=your-service-role-key  # ATTENTION: Ne jamais exposer 
 1. **Allez dans** : Stripe Dashboard → Payment Links
 2. **Trouvez** : https://buy.stripe.com/aFa6oHfLFcnDgJ8eHY4Ja00
 3. **Vérifiez** :
-   - ✅ **Prix** : 21,00 € (ou votre tarif)
+   - ✅ **Prix** : 14,00 € (ou votre tarif)
    - ✅ **Mode** : `payment` (paiement unique)
    - ✅ **Success URL** : `https://consult-chrono.fr/?payment=success`
    - ✅ **Cancel URL** : `https://consult-chrono.fr/?payment=cancelled`

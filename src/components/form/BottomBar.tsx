@@ -58,7 +58,7 @@ export function BottomBar({
           disabled={!canGoNext}
           className="min-h-[48px] rounded-xl flex-1 max-w-[200px] shadow-md disabled:opacity-60 disabled:cursor-not-allowed"
         >
-          {isLastStep ? "Payer 21 €" : "Suivant"}
+          {isLastStep ? "Payer 14 €" : "Suivant"}
         </Button>
       </div>
     </div>
