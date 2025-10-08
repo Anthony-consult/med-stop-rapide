@@ -8,6 +8,9 @@ import {
 } from "@/components/ui/accordion";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import TextType from "@/components/TextType";
+import RotatingText from "@/components/RotatingText";
+import CardNav from "@/components/CardNav";
 import {
   ClipboardCheck,
   FileText,
@@ -109,10 +112,52 @@ export default function Home() {
     },
   ];
 
+  const navItems = [
+    {
+      label: "Accueil",
+      bgColor: "linear-gradient(135deg, #0A6ABF 0%, #3B82F6 100%)",
+      textColor: "#fff",
+      links: [
+        { label: "Accueil", ariaLabel: "Page d'accueil", onClick: () => { navigate('/'); window.scrollTo({ top: 0, behavior: 'smooth' }); } },
+        { label: "Comment ça marche", ariaLabel: "Comment ça marche", onClick: () => { navigate('/'); setTimeout(() => { document.getElementById('process')?.scrollIntoView({ behavior: 'smooth' }); }, 100); } }
+      ]
+    },
+    {
+      label: "Obtenir mon arrêt", 
+      bgColor: "linear-gradient(135deg, #7C3AED 0%, #A855F7 100%)",
+      textColor: "#fff",
+      links: [
+        { label: "Consultation", ariaLabel: "Consultation médicale", onClick: () => navigate('/consultation') },
+        { label: "Certificats", ariaLabel: "Certificats médicaux", onClick: () => navigate('/consultation') }
+      ]
+    },
+    {
+      label: "À propos",
+      bgColor: "linear-gradient(135deg, #059669 0%, #10B981 100%)", 
+      textColor: "#fff",
+      links: [
+        { label: "Notre mission", ariaLabel: "Notre mission", onClick: () => navigate('/a-propos') },
+        { label: "Nos valeurs", ariaLabel: "Nos valeurs", onClick: () => navigate('/a-propos') }
+      ]
+    }
+  ];
+
   return (
     <div className="min-h-screen bg-white">
+      {/* Card Navigation */}
+      <CardNav
+        logo="/logo-big.png"
+        logoAlt="Consult-Rapide Logo"
+        items={navItems}
+        baseColor="#fff"
+        menuColor="#000"
+        buttonBgColor="#0A6ABF"
+        buttonTextColor="#fff"
+        ease="power3.out"
+      />
+
       {/* Hero Section - Ultra Modern */}
-      <section className="relative overflow-hidden py-12 bg-gradient-to-br from-blue-50/30 via-white to-pink-50/30">
+      <section className="relative overflow-hidden py-12 bg-gradient-to-br from-blue-50/30 via-white to-pink-50/30 pt-32 md:pt-40">
         {/* Animated Background Elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-20 left-10 w-72 h-72 bg-blue-200/30 rounded-full blur-3xl animate-pulse"></div>
@@ -120,40 +165,20 @@ export default function Home() {
         </div>
 
         <div className="max-w-screen-lg mx-auto px-4 sm:px-6 relative z-10">
-          {/* Feature Badges - Ultra Modern with Icons */}
-          <div className="grid grid-cols-2 gap-3 mb-12">
-            <div className="group bg-gradient-to-br from-pink-500 to-rose-600 text-white px-4 py-3 rounded-2xl flex items-center gap-3 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
-              <div className="bg-white/20 p-2 rounded-lg backdrop-blur-sm">
-                <Stethoscope className="h-5 w-5" />
-              </div>
-              <span className="text-sm font-semibold">323 médecins</span>
-            </div>
-            <div className="group bg-gradient-to-br from-blue-500 to-cyan-600 text-white px-4 py-3 rounded-2xl flex items-center gap-3 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
-              <div className="bg-white/20 p-2 rounded-lg backdrop-blur-sm">
-                <Shield className="h-5 w-5" />
-              </div>
-              <span className="text-sm font-semibold">Certifié HDS</span>
-            </div>
-            <div className="group bg-gradient-to-br from-purple-500 to-indigo-600 text-white px-4 py-3 rounded-2xl flex items-center gap-3 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
-              <div className="bg-white/20 p-2 rounded-lg backdrop-blur-sm">
-                <Timer className="h-5 w-5" />
-              </div>
-              <span className="text-sm font-semibold">4 minutes</span>
-            </div>
-            <div className="group bg-gradient-to-br from-emerald-500 to-teal-600 text-white px-4 py-3 rounded-2xl flex items-center gap-3 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
-              <div className="bg-white/20 p-2 rounded-lg backdrop-blur-sm">
-                <Lock className="h-5 w-5" />
-              </div>
-              <span className="text-sm font-semibold">Sécurisé SSL</span>
-            </div>
-          </div>
 
           {/* Main Content */}
           <div className="relative flex flex-col md:flex-row gap-12 items-center">
             {/* Left side - Content */}
             <div className="flex-1">
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent leading-tight mb-6">
-                Un diagnostic rapide, en ligne. Obtenez un arrêt maladie 24/7.
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent leading-tight mb-6 min-h-[120px] md:min-h-[140px]">
+                <TextType 
+                  text={["Un diagnostic rapide, en ligne.", "Obtenez un arrêt maladie 24/7."]}
+                  typingSpeed={75}
+                  pauseDuration={1500}
+                  showCursor={true}
+                  cursorCharacter="|"
+                  className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent"
+                />
             </h1>
               
               <p className="text-base md:text-lg text-gray-700 mb-8 leading-relaxed">
@@ -311,6 +336,29 @@ export default function Home() {
                 </div>
               );
             })}
+          </div>
+        </div>
+      </section>
+
+      {/* Reassurance Banner with Rotating Text - Centered */}
+      <section className="py-8 md:py-12 bg-white relative">
+        <div className="flex justify-center">
+          <div className="flex items-center gap-3">
+            <span className="text-2xl font-bold text-gray-900 flex-shrink-0">
+              Service
+            </span>
+            <RotatingText
+              texts={['100% Légal', 'Certifié HDS', 'Conforme RGPD', 'Sécurisé SSL', 'Médecins Diplômés']}
+              mainClassName="bg-gradient-to-r from-blue-600 to-blue-800 text-white font-bold px-4 py-2 rounded-lg text-lg shadow-lg flex-shrink-0"
+              staggerFrom="last"
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "-120%" }}
+              staggerDuration={0.025}
+              splitLevelClassName="overflow-hidden"
+              transition={{ type: "spring", damping: 30, stiffness: 400 }}
+              rotationInterval={2000}
+            />
           </div>
         </div>
       </section>

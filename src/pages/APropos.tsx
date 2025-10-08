@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import CardNav from "@/components/CardNav";
 import {
   Stethoscope,
   Shield,
@@ -90,10 +91,52 @@ export default function APropos() {
     { name: "Hébergement HDS", description: "Sécurité maximale pour vos informations" },
   ];
 
+  const navItems = [
+    {
+      label: "Accueil",
+      bgColor: "linear-gradient(135deg, #0A6ABF 0%, #3B82F6 100%)",
+      textColor: "#fff",
+      links: [
+        { label: "Accueil", ariaLabel: "Page d'accueil", onClick: () => { navigate('/'); window.scrollTo({ top: 0, behavior: 'smooth' }); } },
+        { label: "Comment ça marche", ariaLabel: "Comment ça marche", onClick: () => { navigate('/'); setTimeout(() => { document.getElementById('process')?.scrollIntoView({ behavior: 'smooth' }); }, 100); } }
+      ]
+    },
+    {
+      label: "Obtenir mon arrêt", 
+      bgColor: "linear-gradient(135deg, #7C3AED 0%, #A855F7 100%)",
+      textColor: "#fff",
+      links: [
+        { label: "Consultation", ariaLabel: "Consultation médicale", onClick: () => navigate('/consultation') },
+        { label: "Certificats", ariaLabel: "Certificats médicaux", onClick: () => navigate('/consultation') }
+      ]
+    },
+    {
+      label: "À propos",
+      bgColor: "linear-gradient(135deg, #059669 0%, #10B981 100%)", 
+      textColor: "#fff",
+      links: [
+        { label: "Notre mission", ariaLabel: "Notre mission", onClick: () => navigate('/a-propos') },
+        { label: "Nos valeurs", ariaLabel: "Nos valeurs", onClick: () => navigate('/a-propos') }
+      ]
+    }
+  ];
+
   return (
     <div className="min-h-screen bg-white">
+      {/* Card Navigation */}
+      <CardNav
+        logo="/logo-big.png"
+        logoAlt="Consult-Rapide Logo"
+        items={navItems}
+        baseColor="#fff"
+        menuColor="#000"
+        buttonBgColor="#0A6ABF"
+        buttonTextColor="#fff"
+        ease="power3.out"
+      />
+
       {/* Hero Section */}
-      <section className="relative overflow-hidden py-16 md:py-24 bg-gradient-to-br from-blue-50/30 via-white to-purple-50/30">
+      <section className="relative overflow-hidden py-16 md:py-24 bg-gradient-to-br from-blue-50/30 via-white to-purple-50/30 pt-32 md:pt-40">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-20 left-10 w-72 h-72 bg-blue-200/30 rounded-full blur-3xl animate-pulse"></div>
           <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-200/30 rounded-full blur-3xl animate-pulse"></div>

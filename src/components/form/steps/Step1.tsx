@@ -10,14 +10,30 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 type Step1Data = z.infer<typeof step1Schema>;
 
 export function Step1({ form }: StepComponentProps<Step1Data>) {
   const { control, formState: { errors } } = form;
+  const navigate = useNavigate();
 
   return (
     <div className="space-y-6">
+      {/* Bouton de retour discret */}
+      <div className="flex justify-start">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => navigate('/')}
+          className="text-gray-500 hover:text-gray-700 p-2"
+          aria-label="Retour à l'accueil"
+        >
+          <ArrowLeft className="h-4 w-4" />
+        </Button>
+      </div>
       <div className="space-y-2">
         <Label htmlFor="maladie_presumee" className="text-base font-medium">
           Choisissez la maladie présumée
