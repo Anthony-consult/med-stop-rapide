@@ -20,6 +20,7 @@ export interface StepComponentProps<T extends FieldValues = FieldValues> {
   onNext: () => void;
   onPrev?: () => void;
   formData?: Partial<ConsultationFormData>;
+  onAutoFill?: () => void;
 }
 
 interface FormWizardProps {
@@ -79,6 +80,49 @@ export function FormWizard({ steps, onComplete }: FormWizardProps) {
     }
   };
 
+  const handleAutoFill = () => {
+    // Données de test pré-remplies
+    const testData: Partial<ConsultationFormData> = {
+      maladie_presumee: "Grippe",
+      symptomes: ["Fièvre", "Toux"],
+      diagnostic_anterieur: "non",
+      autres_symptomes: "",
+      zones_douleur: [],
+      apparition_soudaine: "progressif",
+      medicaments_reguliers: "non",
+      facteurs_risque: [],
+      type_arret: "initial",
+      profession: "Employé",
+      date_debut: new Date(),
+      date_fin: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // +3 jours
+      date_fin_lettres: "trois",
+      nom_prenom: "Test User",
+      date_naissance: new Date("1990-01-01"),
+      email: "test@example.com",
+      adresse: "123 rue Test",
+      code_postal: "75001",
+      ville: "Paris",
+      pays: "France",
+      situation_pro: "salarie",
+      localisation_medecin: "Paris",
+      numero_securite_sociale: "190010112345678",
+      conditions_acceptees: false,
+    };
+    
+    // Mettre à jour formData et sauvegarder
+    setFormData(testData);
+    saveFormData(testData);
+    
+    // Sauter à l'étape 18 (index 18 = Step 19 - numéro sécu)
+    setCurrentStep(18);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    
+    toast({
+      title: "✅ Formulaire rempli",
+      description: "Données de test chargées. Vous êtes à l'étape 19.",
+    });
+  };
+
   const StepComponent = currentStepConfig.component;
 
   // Check if current step is the payment step (Step20)
@@ -90,7 +134,7 @@ export function FormWizard({ steps, onComplete }: FormWizardProps) {
       <div className="flex-1 overflow-y-auto pb-32">
         {isPaymentStep ? (
           // Payment step has its own full-screen layout
-          <StepComponent form={form} onNext={handleNext} onPrev={handlePrev} formData={formData} />
+          <StepComponent form={form} onNext={handleNext} onPrev={handlePrev} formData={formData} onAutoFill={handleAutoFill} />
         ) : (
           // Regular steps use the standard layout
           <div className="max-w-sm mx-auto px-4 py-6">
@@ -108,7 +152,7 @@ export function FormWizard({ steps, onComplete }: FormWizardProps) {
 
             {/* Step content in card */}
             <div className="bg-white rounded-2xl border border-gray-200 shadow-md p-6">
-              <StepComponent form={form} onNext={handleNext} formData={formData} />
+              <StepComponent form={form} onNext={handleNext} formData={formData} onAutoFill={handleAutoFill} />
             </div>
           </div>
         )}

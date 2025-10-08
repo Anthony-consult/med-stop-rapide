@@ -11,19 +11,19 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Zap } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 type Step1Data = z.infer<typeof step1Schema>;
 
-export function Step1({ form }: StepComponentProps<Step1Data>) {
+export function Step1({ form, onAutoFill }: StepComponentProps<Step1Data>) {
   const { control, formState: { errors } } = form;
   const navigate = useNavigate();
 
   return (
     <div className="space-y-6">
-      {/* Bouton de retour discret */}
-      <div className="flex justify-start">
+      {/* Boutons de navigation et test */}
+      <div className="flex justify-between items-center">
         <Button
           variant="ghost"
           size="sm"
@@ -32,6 +32,17 @@ export function Step1({ form }: StepComponentProps<Step1Data>) {
           aria-label="Retour à l'accueil"
         >
           <ArrowLeft className="h-4 w-4" />
+        </Button>
+        
+        {/* Bouton de remplissage automatique pour test */}
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onAutoFill}
+          className="text-purple-600 border-purple-300 hover:bg-purple-50"
+        >
+          <Zap className="h-4 w-4 mr-1" />
+          Test rapide
         </Button>
       </div>
       <div className="space-y-2">
