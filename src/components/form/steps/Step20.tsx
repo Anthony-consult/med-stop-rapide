@@ -25,7 +25,7 @@ export function Step20({ form, onNext, onPrev }: StepComponentProps<Step20Data>)
     currency: 'EUR' 
   });
 
-  const handlePay = () => {
+  const handlePay = async () => {
     if (!termsChecked) {
       toast({
         title: "Erreur",
@@ -35,14 +35,21 @@ export function Step20({ form, onNext, onPrev }: StepComponentProps<Step20Data>)
       return;
     }
 
-    // Simulate payment for now
-    toast({
-      title: "Paiement simulé",
-      description: `Paiement de ${currency.format(total)} traité avec succès.`,
-    });
+    // Get consultation ID from localStorage (set by FormWizard after save)
+    const consultationId = localStorage.getItem('consultation_id');
     
-    // Proceed to next step
-    onNext();
+    if (!consultationId) {
+      toast({
+        title: "Erreur",
+        description: "Impossible de récupérer l'ID de consultation.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Redirect to Stripe payment with consultation ID in client_reference_id
+    const stripeUrl = `https://buy.stripe.com/test_aFa6oHfLFcnDgJ8eHY4Ja00?client_reference_id=${consultationId}`;
+    window.location.href = stripeUrl;
   };
 
   const handleGoBack = () => {

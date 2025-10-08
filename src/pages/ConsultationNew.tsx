@@ -231,17 +231,18 @@ export default function ConsultationNew() {
 
       console.log("✅ Consultation sauvegardée:", savedData);
 
-      // Clear localStorage after successful save
+      // Save consultation ID for payment
+      localStorage.setItem('consultation_id', savedData.id);
+
+      // Clear form data but keep consultation_id
       clearFormData();
 
       toast({
         title: "✅ Consultation enregistrée",
-        description: "Votre dossier a été transmis à un médecin partenaire.",
+        description: "Redirection vers le paiement...",
       });
 
-      // TODO: Redirect to Stripe payment
-      // For now, redirect to home with success message
-      navigate("/?success=true");
+      // Proceed to payment step (onNext will be called, which shows Step20)
 
     } catch (error) {
       console.error("❌ Erreur lors de la sauvegarde:", error);
