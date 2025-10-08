@@ -483,7 +483,6 @@ export default function Home() {
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <span className="relative flex items-center gap-3">
-                  <Stethoscope className="h-6 w-6 group-hover:rotate-12 transition-transform duration-300" />
                   Commencer mon diagnostic
                   <ArrowRight className="h-6 w-6 group-hover:translate-x-2 transition-transform duration-300" />
                 </span>
