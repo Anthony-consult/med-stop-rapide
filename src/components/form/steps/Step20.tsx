@@ -7,6 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import { clearFormData } from "@/lib/storage";
 
 type Step20Data = z.infer<typeof step20Schema>;
@@ -77,7 +78,26 @@ export function Step20({ form, onNext, onPrev, formData }: StepComponentProps<St
         conditions_acceptees: termsChecked,
       };
 
-      // Call /api/checkout to create Stripe session
+      // 1. D'ABORD : Créer la ligne dans Supabase (avec payment_status = 'pending')
+      console.log('💾 Création de la ligne dans Supabase...');
+      
+      const { data: savedData, error: supabaseError } = await supabase
+        .from("consultations")
+        .insert([{
+          ...consultationData,
+          payment_status: "pending",
+        }])
+        .select()
+        .single();
+
+      if (supabaseError) {
+        console.error("❌ Erreur Supabase:", supabaseError);
+        throw new Error("Impossible d'enregistrer votre consultation");
+      }
+
+      console.log('✅ Consultation créée dans Supabase:', savedData.id);
+
+      // 2. ENSUITE : Créer la session Stripe avec l'ID de consultation
       const response = await fetch('/api/checkout', {
         method: 'POST',
         headers: {
@@ -85,6 +105,7 @@ export function Step20({ form, onNext, onPrev, formData }: StepComponentProps<St
         },
         body: JSON.stringify({
           formData: consultationData,
+          consultationId: savedData.id, // Passer l'ID pour le webhook
         }),
       });
 

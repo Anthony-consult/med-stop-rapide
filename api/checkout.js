@@ -22,12 +22,14 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { formData } = req.body;
+    const { formData, consultationId } = req.body;
 
     if (!formData) {
       console.error('❌ No formData provided');
       return res.status(400).json({ error: 'Form data is required' });
     }
+
+    console.log('📋 Consultation ID received:', consultationId);
 
     console.log('📝 Form data received:', {
       email: formData.email,
@@ -79,8 +81,11 @@ export default async function handler(req, res) {
       // Customer email
       customer_email: formData.email || undefined,
       
-      // Store form data split into chunks
-      metadata: metadata,
+      // Store form data split into chunks + consultation ID
+      metadata: {
+        ...metadata,
+        consultation_id: consultationId, // ID pour le webhook
+      },
       
       // Success and cancel URLs (sans www pour éviter problèmes de redirection)
       success_url: 'https://consult-chrono.fr/payment/success?session_id={CHECKOUT_SESSION_ID}',
