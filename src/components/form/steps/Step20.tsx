@@ -29,7 +29,10 @@ export function Step20({ form, onNext, onPrev, formData }: StepComponentProps<St
   });
 
   const handlePay = async () => {
+    console.log("🚀 handlePay called - termsChecked:", termsChecked, "isSubmitting:", isSubmitting);
+    
     if (!termsChecked) {
+      console.log("❌ Terms not checked");
       toast({
         title: "Erreur",
         description: "Veuillez accepter les CGU.",
@@ -38,19 +41,26 @@ export function Step20({ form, onNext, onPrev, formData }: StepComponentProps<St
       return;
     }
 
-    if (isSubmitting) return;
+    if (isSubmitting) {
+      console.log("❌ Already submitting, ignoring");
+      return;
+    }
+    
+    console.log("✅ Starting payment process...");
     setIsSubmitting(true);
 
     try {
       // Get all form data from formData prop
       const allFormData = formData as ConsultationFormData;
       
-      console.log("💳 Création de la session Stripe...", {
-        email: allFormData.email,
-        nom_prenom: allFormData.nom_prenom,
-      });
+      console.log("💳 STEP 1: Form data validation");
+      console.log("💳 All form data:", allFormData);
+      console.log("💳 Email:", allFormData.email);
+      console.log("💳 Nom:", allFormData.nom_prenom);
+      console.log("💳 Fields count:", Object.keys(allFormData).length);
 
       // Prepare data for Stripe (will be stored in metadata)
+      console.log("💳 STEP 2: Preparing consultation data");
       const consultationData = {
         maladie_presumee: allFormData.maladie_presumee,
         symptomes: allFormData.symptomes,
@@ -77,9 +87,16 @@ export function Step20({ form, onNext, onPrev, formData }: StepComponentProps<St
         numero_securite_sociale: allFormData.numero_securite_sociale,
         conditions_acceptees: termsChecked,
       };
+      
+      console.log("💳 STEP 2: Consultation data prepared:", consultationData);
 
       // 1. D'ABORD : Créer la ligne dans Supabase (avec payment_status = 'pending')
-      console.log('💾 Création de la ligne dans Supabase...');
+      console.log('💾 STEP 3: Creating consultation in Supabase...');
+      console.log('💾 Supabase client exists:', !!supabase);
+      console.log('💾 Data to insert:', {
+        ...consultationData,
+        payment_status: "pending",
+      });
       
       const { data: savedData, error: supabaseError } = await supabase
         .from("consultations")
@@ -90,40 +107,71 @@ export function Step20({ form, onNext, onPrev, formData }: StepComponentProps<St
         .select()
         .single();
 
+      console.log('💾 Supabase response - data:', savedData);
+      console.log('💾 Supabase response - error:', supabaseError);
+
       if (supabaseError) {
-        console.error("❌ Erreur Supabase:", supabaseError);
-        throw new Error("Impossible d'enregistrer votre consultation");
+        console.error("❌ SUPABASE ERROR DETAILS:", {
+          message: supabaseError.message,
+          code: supabaseError.code,
+          details: supabaseError.details,
+          hint: supabaseError.hint,
+        });
+        throw new Error(`Impossible d'enregistrer votre consultation: ${supabaseError.message}`);
       }
 
-      console.log('✅ Consultation créée dans Supabase:', savedData.id);
+      if (!savedData || !savedData.id) {
+        console.error("❌ No data returned from Supabase insert");
+        throw new Error("Aucune donnée retournée par Supabase");
+      }
+
+      console.log('✅ STEP 3 SUCCESS: Consultation créée dans Supabase');
+      console.log('✅ Consultation ID:', savedData.id);
+      console.log('✅ Full saved data:', savedData);
 
       // 2. ENSUITE : Créer la session Stripe avec l'ID de consultation
+      console.log('💳 STEP 4: Creating Stripe session...');
+      console.log('💳 Consultation ID to send:', savedData.id);
+      
+      const requestBody = {
+        formData: consultationData,
+        consultationId: savedData.id,
+      };
+      
+      console.log('💳 Request body:', requestBody);
+      
       const response = await fetch('/api/checkout', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          formData: consultationData,
-          consultationId: savedData.id, // Passer l'ID pour le webhook
-        }),
+        body: JSON.stringify(requestBody),
       });
+
+      console.log('💳 Stripe API response status:', response.status);
+      console.log('💳 Stripe API response ok:', response.ok);
 
       if (!response.ok) {
         const errorData = await response.json();
+        console.error('❌ Stripe API error:', errorData);
         throw new Error(errorData.message || 'Erreur lors de la création de la session de paiement');
       }
 
-      const { url: stripeUrl } = await response.json();
+      const responseData = await response.json();
+      console.log('💳 Stripe API response data:', responseData);
+      
+      const { url: stripeUrl } = responseData;
 
       if (!stripeUrl) {
+        console.error('❌ No Stripe URL in response:', responseData);
         throw new Error('URL Stripe non reçue');
       }
 
-      console.log('✅ Session Stripe créée');
+      console.log('✅ STEP 4 SUCCESS: Session Stripe créée');
       console.log('🔗 Stripe URL:', stripeUrl);
 
       // Clear form data
+      console.log('💳 STEP 5: Clearing form data and redirecting...');
       clearFormData();
 
       toast({
@@ -132,13 +180,18 @@ export function Step20({ form, onNext, onPrev, formData }: StepComponentProps<St
       });
 
       // Redirect to Stripe Checkout
+      console.log('💳 STEP 5: Setting timeout for redirect...');
       setTimeout(() => {
-        console.log('🚀 Redirecting to Stripe Checkout...');
+        console.log('🚀 REDIRECTING TO STRIPE CHECKOUT...');
+        console.log('🚀 URL:', stripeUrl);
         window.location.href = stripeUrl;
       }, 1000);
 
     } catch (error) {
-      console.error("❌ Erreur lors de la création de la session:", error);
+      console.error("❌ PAYMENT ERROR - Full error details:", error);
+      console.error("❌ Error name:", error?.name);
+      console.error("❌ Error message:", error?.message);
+      console.error("❌ Error stack:", error?.stack);
       
       toast({
         title: "❌ Erreur",
@@ -146,6 +199,7 @@ export function Step20({ form, onNext, onPrev, formData }: StepComponentProps<St
         variant: "destructive",
       });
       
+      console.log("❌ Resetting isSubmitting to false");
       setIsSubmitting(false);
     }
   };
