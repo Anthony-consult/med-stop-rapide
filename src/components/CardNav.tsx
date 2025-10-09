@@ -209,8 +209,14 @@ const CardNav = ({
         }`}
       >
         <div className="card-nav-top absolute inset-x-0 top-0 h-[60px] flex items-center justify-between p-2 z-[2]">
+          <div className="w-12 md:hidden"></div>
+
+          <div className="logo-container flex items-center justify-center flex-1 order-1 md:absolute md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:order-none">
+            <img src={logo} alt={logoAlt} className="logo h-[36px]" />
+          </div>
+
           <div
-            className={`hamburger-menu ${isHamburgerOpen ? 'open' : ''} group h-full flex flex-col items-center justify-center cursor-pointer gap-[6px] order-2 md:order-none w-12`}
+            className={`hamburger-menu ${isHamburgerOpen ? 'open' : ''} group h-full flex flex-col items-center justify-center cursor-pointer gap-[6px] order-2 w-12`}
             onClick={toggleMenu}
             role="button"
             aria-label={isExpanded ? 'Close menu' : 'Open menu'}
@@ -228,21 +234,6 @@ const CardNav = ({
               } group-hover:opacity-75`}
             />
           </div>
-
-          <div className="logo-container flex items-center justify-center flex-1 order-1 md:absolute md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:order-none">
-            <img src={logo} alt={logoAlt} className="logo h-[36px]" />
-          </div>
-
-          <div className="w-12 md:hidden"></div>
-
-          <button
-            type="button"
-            onClick={() => navigate('/consultation')}
-            className="card-nav-cta-button hidden md:inline-flex border-0 rounded-[calc(0.75rem-0.2rem)] px-6 h-full font-medium cursor-pointer transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white items-center justify-center gap-2"
-          >
-            <span>Commencer maintenant</span>
-            <ArrowRight className="h-4 w-4" />
-          </button>
         </div>
 
         <div
