@@ -87,8 +87,8 @@ export default async function handler(req, res) {
         consultation_id: consultationId, // ID pour le webhook
       },
       
-      // Success and cancel URLs (sans www pour éviter problèmes de redirection)
-      success_url: 'https://consult-chrono.fr/payment/success?session_id={CHECKOUT_SESSION_ID}',
+      // Success and cancel URLs (page HTML statique dans public/)
+      success_url: 'https://consult-chrono.fr/payment/success.html?session_id={CHECKOUT_SESSION_ID}',
       cancel_url: 'https://consult-chrono.fr/',
       
       // Automatic tax calculation (optional)

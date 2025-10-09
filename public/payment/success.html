@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paiement confirmé - Consult-Chrono</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(to bottom, #f0fdf4, #ffffff);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    .header {
+      background: white;
+      border-bottom: 1px solid #f3f4f6;
+      padding: 1rem;
+      display: flex;
+      justify-content: center;
+    }
+
+    .logo {
+      height: 2rem;
+    }
+
+    /* Main Content */
+    .container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem 1rem;
+    }
+
+    .content {
+      max-width: 28rem;
+      width: 100%;
+    }
+
+    /* Success Icon */
+    .icon-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .icon-circle {
+      width: 4rem;
+      height: 4rem;
+      background: #dcfce7;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .checkmark {
+      width: 2.5rem;
+      height: 2.5rem;
+      stroke: #16a34a;
+      stroke-width: 3;
+      fill: none;
+    }
+
+    /* Title */
+    h1 {
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-align: center;
+      color: #111827;
+      margin-bottom: 1rem;
+    }
+
+    /* Main Card */
+    .main-card {
+      background: white;
+      border-radius: 1rem;
+      border: 1px solid #e5e7eb;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    .main-card p {
+      text-align: center;
+      color: #6b7280;
+      line-height: 1.6;
+    }
+
+    /* Info Cards */
+    .info-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .info-card {
+      background: white;
+      border-radius: 0.75rem;
+      border: 1px solid #e5e7eb;
+      padding: 1rem;
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .info-icon {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .info-icon.blue {
+      background: #dbeafe;
+    }
+
+    .info-icon.purple {
+      background: #e9d5ff;
+    }
+
+    .info-icon svg {
+      width: 1rem;
+      height: 1rem;
+    }
+
+    .info-icon.blue svg {
+      stroke: #2563eb;
+    }
+
+    .info-icon.purple svg {
+      stroke: #9333ea;
+    }
+
+    .info-content h3 {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #111827;
+      margin-bottom: 0.25rem;
+    }
+
+    .info-content p {
+      font-size: 0.75rem;
+      color: #6b7280;
+      line-height: 1.5;
+    }
+
+    /* Button */
+    .btn {
+      width: 100%;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 0.75rem;
+      padding: 0.75rem;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn:hover {
+      background: #1d4ed8;
+    }
+
+    /* Support */
+    .support {
+      text-align: center;
+      margin-top: 1.5rem;
+    }
+
+    .support p {
+      font-size: 0.75rem;
+      color: #9ca3af;
+    }
+
+    .support a {
+      color: #2563eb;
+      text-decoration: none;
+    }
+
+    .support a:hover {
+      text-decoration: underline;
+    }
+
+    /* Animation */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(1rem);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .content {
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    /* Loading Spinner */
+    .spinner {
+      display: inline-block;
+      width: 2.5rem;
+      height: 2.5rem;
+      border: 3px solid #dcfce7;
+      border-top-color: #16a34a;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <img src="/logo-big.png" alt="Consult-Chrono" class="logo">
+  </div>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="content">
+      <!-- Loading Spinner (hidden after 2 seconds) -->
+      <div class="loading" id="loading">
+        <div class="spinner"></div>
+      </div>
+
+      <!-- Success Icon (shown after 2 seconds) -->
+      <div class="icon-container hidden" id="successIcon">
+        <div class="icon-circle">
+          <svg class="checkmark" viewBox="0 0 52 52">
+            <circle cx="26" cy="26" r="25" fill="none"/>
+            <path d="M14 27l7.5 7.5L38 18" fill="none" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Title -->
+      <h1>Merci pour votre paiement !</h1>
+
+      <!-- Main Message -->
+      <div class="main-card">
+        <p>Votre demande d'arrêt maladie a été enregistrée avec succès.</p>
+      </div>
+
+      <!-- Info Cards -->
+      <div class="info-cards">
+        <!-- Email Card -->
+        <div class="info-card">
+          <div class="info-icon blue">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="4" width="20" height="16" rx="2"/>
+              <path d="M22 7l-10 7L2 7"/>
+            </svg>
+          </div>
+          <div class="info-content">
+            <h3>Vérifiez vos emails</h3>
+            <p>Un email de confirmation vous a été envoyé. Vérifiez également vos spams.</p>
+          </div>
+        </div>
+
+        <!-- Contact Card -->
+        <div class="info-card">
+          <div class="info-icon purple">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+            </svg>
+          </div>
+          <div class="info-content">
+            <h3>Nous vous contacterons</h3>
+            <p>Un médecin vous contactera très prochainement pour traiter votre demande.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Back Button -->
+      <button class="btn" onclick="window.location.href='/'">
+        Retour à l'accueil
+      </button>
+
+      <!-- Support -->
+      <div class="support">
+        <p>
+          Une question ? 
+          <a href="mailto:contact@consult-chrono.fr">contact@consult-chrono.fr</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Update payment status in database
+    async function updatePaymentStatus() {
+      try {
+        // Get session_id from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const sessionId = urlParams.get('session_id');
+        
+        console.log('🎉 Payment success page loaded');
+        console.log('🔍 Session ID:', sessionId);
+
+        // Wait 2 seconds, then show success
+        setTimeout(() => {
+          document.getElementById('loading').classList.add('hidden');
+          document.getElementById('successIcon').classList.remove('hidden');
+        }, 2000);
+
+        // Try to update payment status via API
+        if (sessionId) {
+          // Import Supabase client
+          const SUPABASE_URL = 'https://wyhqxrfxghqsjkzfhkjf.supabase.co';
+          const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5aHF4cmZ4Z2hxc2premZoa2pmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjg0NzAxMjYsImV4cCI6MjA0NDA0NjEyNn0.D3j2kJYx96NYPKeSJlN4cN_ckT9lVVR8VfeFT5ynOsA';
+
+          // Wait 3 seconds for webhook to update
+          await new Promise(resolve => setTimeout(resolve, 3000));
+
+          // Check if payment was updated by webhook
+          const response = await fetch(`${SUPABASE_URL}/rest/v1/consultations?payment_status=eq.pending&order=created_at.desc&limit=1`, {
+            headers: {
+              'apikey': SUPABASE_ANON_KEY,
+              'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+            }
+          });
+
+          const consultations = await response.json();
+          console.log('🔍 Found consultations:', consultations);
+
+          if (consultations && consultations.length > 0) {
+            const consultation = consultations[0];
+            console.log('⚠️ Payment still pending, updating manually...');
+
+            // Manual update as fallback
+            await fetch(`${SUPABASE_URL}/rest/v1/consultations?id=eq.${consultation.id}`, {
+              method: 'PATCH',
+              headers: {
+                'apikey': SUPABASE_ANON_KEY,
+                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                'Content-Type': 'application/json',
+                'Prefer': 'return=minimal'
+              },
+              body: JSON.stringify({
+                payment_status: 'done'
+              })
+            });
+
+            console.log('✅ Payment status updated manually');
+          } else {
+            console.log('✅ Payment already confirmed by webhook');
+          }
+        }
+      } catch (error) {
+        console.error('❌ Error updating payment status:', error);
+      }
+    }
+
+    // Run when page loads
+    updatePaymentStatus();
+  </script>
+</body>
+</html>
+
