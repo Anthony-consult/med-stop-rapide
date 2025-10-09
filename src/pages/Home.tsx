@@ -11,6 +11,7 @@ import { useEffect } from "react";
 import TextType from "@/components/TextType";
 import RotatingText from "@/components/RotatingText";
 import CardNav from "@/components/CardNav";
+import SplitText from "@/components/SplitText";
 import {
   ClipboardCheck,
   FileText,
@@ -170,9 +171,20 @@ export default function Home() {
           <div className="relative flex flex-col md:flex-row gap-12 items-center">
             {/* Left side - Content */}
             <div className="flex-1">
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight mb-6 bg-gradient-to-r from-gray-900 to-[#008AA4] bg-clip-text text-transparent">
-                Un arrêt maladie en 4 minutes.
-              </h1>
+              <SplitText
+                text="Un arrêt maladie en 4 minutes."
+                tag="h1"
+                className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight mb-6 bg-gradient-to-r from-gray-900 to-[#008AA4] bg-clip-text text-transparent"
+                delay={50}
+                duration={0.8}
+                ease="power3.out"
+                splitType="chars"
+                from={{ opacity: 0, y: 30 }}
+                to={{ opacity: 1, y: 0 }}
+                threshold={0.2}
+                rootMargin="0px"
+                textAlign="left"
+              />
               
               <p className="text-base md:text-lg text-slate-600 mb-4 leading-relaxed">
                 Répondez à quelques questions, validez votre demande,

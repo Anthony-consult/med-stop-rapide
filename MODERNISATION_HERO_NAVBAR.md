@@ -73,7 +73,11 @@ Tous les gradients sont **très modernes** avec 3 points de couleur pour plus de
   ```
 - ✅ **Sous-titre clair** avec ton médical :
   ```
-  "Simple, rapide et légal — pour seulement 14€."
+  "Un arrêt maladie simple, rapide et 100 % légal.
+
+Répondez à un court formulaire médical (4 minutes suffisent), et recevez votre arrêt maladie validé par un médecin, directement par email.
+
+Plus besoin de déplacement ni d’attente : notre équipe médicale vérifie chaque demande et vous répond sous 24 h."
   ```
 - ✅ Couleur primaire : `text-[#008AA4]` pour le prix
 - ✅ Sous-titre : `text-slate-600` (contraste AA ≥ 4.5:1)
