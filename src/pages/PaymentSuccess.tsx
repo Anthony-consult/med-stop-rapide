@@ -12,6 +12,12 @@ export default function PaymentSuccess() {
   const [paymentStatus, setPaymentStatus] = useState<'checking' | 'confirmed' | 'failed'>('checking');
 
   useEffect(() => {
+    // Redirect from www to non-www if needed
+    if (window.location.hostname === 'www.consult-chrono.fr') {
+      window.location.href = 'https://consult-chrono.fr/payment/success' + window.location.search;
+      return;
+    }
+
     // Scroll to top on mount
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
