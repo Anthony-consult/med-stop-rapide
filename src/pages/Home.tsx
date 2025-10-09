@@ -230,16 +230,16 @@ export default function Home() {
               {/* Trust Indicators - Modern Cards */}
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                 <div className="flex items-center gap-3 bg-[#F4FBFC] border border-[#E6F7FA] rounded-xl px-4 py-3 transition-transform hover:-translate-y-0.5 cursor-default">
-                  <Shield className="h-5 w-5 text-[#008AA4] flex-shrink-0" />
-                  <span className="text-sm font-semibold text-gray-800">Légal & conforme</span>
+                  <Lock className="h-5 w-5 text-[#008AA4] flex-shrink-0" />
+                  <span className="text-sm font-semibold text-gray-800">RGPD</span>
                 </div>
                 <div className="flex items-center gap-3 bg-[#F4FBFC] border border-[#E6F7FA] rounded-xl px-4 py-3 transition-transform hover:-translate-y-0.5 cursor-default">
                   <Clock className="h-5 w-5 text-[#008AA4] flex-shrink-0" />
                   <span className="text-sm font-semibold text-gray-800">Réponse 24h</span>
                 </div>
                 <div className="flex items-center gap-3 bg-[#F4FBFC] border border-[#E6F7FA] rounded-xl px-4 py-3 transition-transform hover:-translate-y-0.5 cursor-default col-span-2 md:col-span-1">
-                  <Lock className="h-5 w-5 text-[#008AA4] flex-shrink-0" />
-                  <span className="text-sm font-semibold text-gray-800">RGPD</span>
+                  <Shield className="h-5 w-5 text-[#008AA4] flex-shrink-0" />
+                  <span className="text-sm font-semibold text-gray-800">Légal & conforme</span>
                 </div>
               </div>
             </div>
