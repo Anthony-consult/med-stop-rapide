@@ -208,15 +208,18 @@ const CardNav = ({
             : 'bg-white/70 backdrop-blur-md shadow-[0_2px_10px_rgba(0,0,0,0.05)]'
         }`}
       >
-        <div className="card-nav-top absolute inset-x-0 top-0 h-[60px] flex items-center justify-between p-2 z-[2]">
+        <div className="card-nav-top absolute inset-x-0 top-0 h-[60px] flex items-center p-2 z-[2]">
+          {/* Spacer gauche (visible sur mobile uniquement) */}
           <div className="w-12 md:hidden"></div>
 
-          <div className="logo-container flex items-center justify-center flex-1 order-1 md:absolute md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:order-none">
+          {/* Logo centré */}
+          <div className="flex-1 flex items-center justify-center md:absolute md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2">
             <img src={logo} alt={logoAlt} className="logo h-[36px]" />
           </div>
 
+          {/* Burger menu à droite */}
           <div
-            className={`hamburger-menu ${isHamburgerOpen ? 'open' : ''} group h-full flex flex-col items-center justify-center cursor-pointer gap-[6px] order-2 w-12`}
+            className={`hamburger-menu ${isHamburgerOpen ? 'open' : ''} group h-full flex flex-col items-center justify-center cursor-pointer gap-[6px] w-12`}
             onClick={toggleMenu}
             role="button"
             aria-label={isExpanded ? 'Close menu' : 'Open menu'}
