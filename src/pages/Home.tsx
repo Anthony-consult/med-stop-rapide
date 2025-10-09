@@ -266,38 +266,34 @@ export default function Home() {
 
       {/* Payment Success Banner */}
       {paymentStatus && (
-        <div className="bg-green-50 border-l-4 border-green-400 p-4 mb-8">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              {isCheckingPayment ? (
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-green-600"></div>
-              ) : paymentStatus === 'confirmed' ? (
-                <CheckCircle className="h-6 w-6 text-green-600" />
-              ) : (
-                <CheckCircle className="h-6 w-6 text-red-600" />
-              )}
-            </div>
-            <div className="ml-3">
-              <p className="text-sm font-medium text-green-800">
-                {isCheckingPayment ? 'Vérification du paiement...' :
-                 paymentStatus === 'confirmed' ? 'Paiement confirmé ! Votre demande a été enregistrée.' :
-                 'Problème de paiement. Contactez-nous si nécessaire.'}
-              </p>
-              {paymentStatus === 'confirmed' && (
-                <p className="text-sm text-green-700 mt-1">
-                  Un email de confirmation vous a été envoyé. Votre arrêt maladie sera traité sous 24h.
+        <div className="fixed top-20 left-0 right-0 z-50 mx-4 md:mx-auto md:max-w-2xl">
+          <div className="bg-green-50 border-l-4 border-green-400 p-4 rounded-lg shadow-lg">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                {isCheckingPayment ? (
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-green-600"></div>
+                ) : paymentStatus === 'confirmed' ? (
+                  <CheckCircle className="h-6 w-6 text-green-600" />
+                ) : (
+                  <CheckCircle className="h-6 w-6 text-red-600" />
+                )}
+              </div>
+              <div className="ml-3">
+                <p className="text-sm font-medium text-green-800">
+                  {isCheckingPayment ? 'Vérification du paiement...' :
+                   paymentStatus === 'confirmed' ? 'Paiement confirmé ! Votre demande a été enregistrée.' :
+                   'Problème de paiement. Contactez-nous si nécessaire.'}
                 </p>
-              )}
+                {paymentStatus === 'confirmed' && (
+                  <p className="text-sm text-green-700 mt-1">
+                    Un email de confirmation vous a été envoyé. Votre arrêt maladie sera traité sous 24h.
+                  </p>
+                )}
+              </div>
             </div>
           </div>
         </div>
       )}
-        baseColor="#fff"
-        menuColor="#000"
-        buttonBgColor="#0A6ABF"
-        buttonTextColor="#fff"
-        ease="power3.out"
-      />
 
       {/* Hero Section - Ultra Modern */}
       <section className="relative overflow-hidden py-12 bg-gradient-to-br from-blue-50/30 via-white to-pink-50/30 pt-32 md:pt-40">
