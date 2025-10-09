@@ -82,8 +82,8 @@ export default async function handler(req, res) {
       // Store form data split into chunks
       metadata: metadata,
       
-      // Success and cancel URLs
-      success_url: 'https://consult-chrono.fr/payment/success',
+      // Success and cancel URLs (sans www pour éviter problèmes de redirection)
+      success_url: 'https://consult-chrono.fr/payment/success?session_id={CHECKOUT_SESSION_ID}',
       cancel_url: 'https://consult-chrono.fr/',
       
       // Automatic tax calculation (optional)
