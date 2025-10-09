@@ -9,6 +9,10 @@
     {
       "source": "/api/(.*)",
       "destination": "/api/$1"
+    },
+    {
+      "source": "/((?!api|_next|static|favicon|.*\\.).*)",
+      "destination": "/index.html"
     }
   ],
   "headers": [
