@@ -35,6 +35,29 @@ export default async function handler(req, res) {
       fieldsCount: Object.keys(formData).length
     });
 
+    // Stripe metadata limit: 500 chars per value, 50 keys max
+    // Split form data into multiple metadata keys
+    const formDataJson = JSON.stringify(formData);
+    const chunkSize = 450; // Leave margin for safety
+    const chunks = [];
+    
+    for (let i = 0; i < formDataJson.length; i += chunkSize) {
+      chunks.push(formDataJson.substring(i, i + chunkSize));
+    }
+    
+    console.log('📦 Splitting formData into', chunks.length, 'chunks');
+    
+    // Build metadata object with chunked data
+    const metadata = {
+      chunks_count: chunks.length.toString(),
+    };
+    
+    chunks.forEach((chunk, index) => {
+      metadata[`chunk_${index}`] = chunk;
+    });
+
+    console.log('📦 Metadata keys:', Object.keys(metadata));
+
     // Create Stripe Checkout Session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -56,11 +79,8 @@ export default async function handler(req, res) {
       // Customer email
       customer_email: formData.email || undefined,
       
-      // Store ALL form data in metadata (Stripe limit: 500 chars per value, 50 keys)
-      // We'll use a single metadata key with JSON stringified data
-      metadata: {
-        formData: JSON.stringify(formData),
-      },
+      // Store form data split into chunks
+      metadata: metadata,
       
       // Success and cancel URLs
       success_url: 'https://consult-chrono.fr/payment/success',

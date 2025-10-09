@@ -70,19 +70,34 @@ export default async function handler(req, res) {
         console.log('💰 Session ID:', session.id);
         console.log('💰 Payment status:', session.payment_status);
         console.log('💰 Payment intent:', session.payment_intent);
-        console.log('💰 Metadata:', session.metadata);
+        console.log('💰 Metadata keys:', Object.keys(session.metadata || {}));
         
-        // Get form data from metadata
-        const formDataJson = session.metadata?.formData;
         const paymentIntentId = session.payment_intent;
         
-        console.log('📦 Form data JSON exists:', !!formDataJson);
+        // Reconstruct formData from metadata chunks
+        const metadata = session.metadata || {};
+        const chunksCount = parseInt(metadata.chunks_count || '0', 10);
         
-        if (!formDataJson) {
-          console.error('❌ No formData found in session metadata');
-          console.error('❌ Metadata keys:', Object.keys(session.metadata || {}));
-          return res.status(400).json({ error: 'No form data in metadata' });
+        console.log('📦 Chunks count:', chunksCount);
+        
+        if (!chunksCount || chunksCount === 0) {
+          console.error('❌ No chunks found in session metadata');
+          console.error('❌ Metadata keys:', Object.keys(metadata));
+          return res.status(400).json({ error: 'No form data chunks in metadata' });
         }
+
+        // Reconstruct JSON from chunks
+        let formDataJson = '';
+        for (let i = 0; i < chunksCount; i++) {
+          const chunk = metadata[`chunk_${i}`];
+          if (!chunk) {
+            console.error(`❌ Missing chunk_${i}`);
+            return res.status(400).json({ error: `Missing chunk_${i}` });
+          }
+          formDataJson += chunk;
+        }
+        
+        console.log('📦 Reconstructed JSON length:', formDataJson.length);
 
         let formData;
         try {
@@ -91,6 +106,7 @@ export default async function handler(req, res) {
           console.log('📝 Form data fields:', Object.keys(formData));
         } catch (parseError) {
           console.error('❌ Failed to parse form data JSON:', parseError);
+          console.error('❌ Reconstructed JSON:', formDataJson);
           return res.status(400).json({ error: 'Invalid form data JSON' });
         }
 
