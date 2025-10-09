@@ -22,8 +22,8 @@ export function Step1({ form, onAutoFill }: StepComponentProps<Step1Data>) {
 
   return (
     <div className="space-y-6">
-      {/* Boutons de navigation et test */}
-      <div className="flex justify-between items-center">
+      {/* Bouton de navigation */}
+      <div className="flex justify-start items-center">
         <Button
           variant="ghost"
           size="sm"
@@ -32,17 +32,6 @@ export function Step1({ form, onAutoFill }: StepComponentProps<Step1Data>) {
           aria-label="Retour à l'accueil"
         >
           <ArrowLeft className="h-4 w-4" />
-        </Button>
-        
-        {/* Bouton de remplissage automatique pour test */}
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={onAutoFill}
-          className="text-purple-600 border-purple-300 hover:bg-purple-50"
-        >
-          <Zap className="h-4 w-4 mr-1" />
-          Test rapide
         </Button>
       </div>
       <div className="space-y-2">

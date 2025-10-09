@@ -170,12 +170,18 @@ export default function Home() {
           <div className="relative flex flex-col md:flex-row gap-12 items-center">
             {/* Left side - Content */}
             <div className="flex-1">
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight mb-4">
-                Votre diagnostic et arrêt maladie en ligne
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight mb-6 bg-gradient-to-r from-gray-900 to-[#008AA4] bg-clip-text text-transparent">
+                Un arrêt maladie en 4 minutes.
               </h1>
               
-              <p className="text-base md:text-lg text-slate-600 mb-8 leading-relaxed">
-                Simple, rapide et légal — pour seulement <span className="font-bold text-[#008AA4]">14€</span>.
+              <p className="text-base md:text-lg text-slate-600 mb-4 leading-relaxed">
+                Répondez à quelques questions, validez votre demande,
+                <br className="hidden sm:block" />
+                et recevez votre document médical directement par email.
+              </p>
+              
+              <p className="text-base font-semibold text-[#008AA4] mb-8">
+                Simple, légal, sans attente.
               </p>
               
               {/* CTA Buttons - Ultra Modern */}
