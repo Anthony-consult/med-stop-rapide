@@ -1,4 +1,4 @@
-// Script pour générer tous les favicons à partir de favicon2.0.png
+// Script pour générer tous les favicons à partir de favicon3.0.png
 // Nécessite: npm install sharp
 
 import sharp from 'sharp';
@@ -9,12 +9,12 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const sourcePath = path.join(__dirname, '../public/favicon2.0.png');
+const sourcePath = path.join(__dirname, '../public/favicon3.0.png');
 const publicPath = path.join(__dirname, '../public');
 
 async function generateFavicons() {
   try {
-    console.log('📦 Generating favicons from favicon2.0.png...');
+    console.log('📦 Generating favicons from favicon3.0.png...');
 
     // 1. favicon.ico (32x32)
     await sharp(sourcePath)
