@@ -7,10 +7,12 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import TextType from "@/components/TextType";
 import RotatingText from "@/components/RotatingText";
 import CardNav from "@/components/CardNav";
+import { supabase } from "@/integrations/supabase/client";
 import {
   ClipboardCheck,
   FileText,
@@ -34,11 +36,113 @@ import {
 
 export default function Home() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const [paymentStatus, setPaymentStatus] = useState<'checking' | 'confirmed' | 'failed' | null>(null);
+  const [isCheckingPayment, setIsCheckingPayment] = useState(false);
+
+  // Check if this is a payment success redirect
+  useEffect(() => {
+    const paymentSuccess = searchParams.get('payment');
+    const sessionId = searchParams.get('session_id');
+    
+    if (paymentSuccess === 'success') {
+      console.log('🎉 Payment success detected!');
+      setIsCheckingPayment(true);
+      checkPaymentStatus();
+    }
+  }, [searchParams]);
 
   // Scroll to top when component mounts
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
+
+  const checkPaymentStatus = async () => {
+    try {
+      console.log('🔍 Checking payment status...');
+      
+      // Find the most recent pending consultation
+      const { data: consultations, error } = await supabase
+        .from('consultations')
+        .select('*')
+        .eq('payment_status', 'pending')
+        .order('created_at', { ascending: false })
+        .limit(1);
+
+      if (error) {
+        console.error('❌ Error fetching consultations:', error);
+        setPaymentStatus('failed');
+        setIsCheckingPayment(false);
+        return;
+      }
+
+      console.log('🔍 Found consultations:', consultations);
+
+      if (consultations && consultations.length > 0) {
+        const consultation = consultations[0];
+        console.log('🔍 Checking consultation:', consultation.id);
+        
+        // Wait a bit for webhook to potentially update
+        await new Promise(resolve => setTimeout(resolve, 3000));
+        
+        // Check again if it's been updated
+        const { data: updatedConsultation, error: updateError } = await supabase
+          .from('consultations')
+          .select('payment_status, payment_id')
+          .eq('id', consultation.id)
+          .single();
+
+        if (updateError) {
+          console.error('❌ Error checking updated consultation:', updateError);
+          setPaymentStatus('failed');
+        } else {
+          console.log('🔍 Updated consultation status:', updatedConsultation);
+          
+          if (updatedConsultation.payment_status === 'done') {
+            console.log('✅ Payment confirmed!');
+            setPaymentStatus('confirmed');
+          } else {
+            console.log('⚠️ Payment still pending, updating manually...');
+            // Try to manually update (fallback)
+            await manualPaymentUpdate(consultation.id);
+          }
+        }
+      } else {
+        console.log('❌ No pending consultations found');
+        setPaymentStatus('failed');
+      }
+      
+      setIsCheckingPayment(false);
+    } catch (error) {
+      console.error('❌ Error in checkPaymentStatus:', error);
+      setPaymentStatus('failed');
+      setIsCheckingPayment(false);
+    }
+  };
+
+  const manualPaymentUpdate = async (consultationId: string) => {
+    try {
+      console.log('🔄 Attempting manual payment update for:', consultationId);
+      
+      const { error } = await supabase
+        .from('consultations')
+        .update({ 
+          payment_status: 'done',
+        })
+        .eq('id', consultationId);
+
+      if (error) {
+        console.error('❌ Manual update failed:', error);
+        setPaymentStatus('failed');
+      } else {
+        console.log('✅ Manual update successful');
+        setPaymentStatus('confirmed');
+      }
+    } catch (error) {
+      console.error('❌ Error in manual update:', error);
+      setPaymentStatus('failed');
+    }
+  };
 
   const trustBadges = [
     {
@@ -149,6 +253,36 @@ export default function Home() {
         logo="/logo-big.png"
         logoAlt="Consult-Chrono Logo"
         items={navItems}
+      />
+
+      {/* Payment Success Banner */}
+      {paymentStatus && (
+        <div className="bg-green-50 border-l-4 border-green-400 p-4 mb-8">
+          <div className="flex items-center">
+            <div className="flex-shrink-0">
+              {isCheckingPayment ? (
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-green-600"></div>
+              ) : paymentStatus === 'confirmed' ? (
+                <CheckCircle className="h-6 w-6 text-green-600" />
+              ) : (
+                <CheckCircle className="h-6 w-6 text-red-600" />
+              )}
+            </div>
+            <div className="ml-3">
+              <p className="text-sm font-medium text-green-800">
+                {isCheckingPayment ? 'Vérification du paiement...' :
+                 paymentStatus === 'confirmed' ? 'Paiement confirmé ! Votre demande a été enregistrée.' :
+                 'Problème de paiement. Contactez-nous si nécessaire.'}
+              </p>
+              {paymentStatus === 'confirmed' && (
+                <p className="text-sm text-green-700 mt-1">
+                  Un email de confirmation vous a été envoyé. Votre arrêt maladie sera traité sous 24h.
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
         baseColor="#fff"
         menuColor="#000"
         buttonBgColor="#0A6ABF"
