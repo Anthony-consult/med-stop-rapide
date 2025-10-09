@@ -39,10 +39,21 @@ const CardNav = ({
 }: CardNavProps) => {
   const [isHamburgerOpen, setIsHamburgerOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const navRef = useRef<HTMLElement>(null);
   const cardsRef = useRef<HTMLDivElement[]>([]);
   const tlRef = useRef<gsap.core.Timeline | null>(null);
   const navigate = useNavigate();
+
+  // Scroll effect for navbar
+  useEffect(() => {
+    const onScroll = () => {
+      setIsScrolled(window.scrollY > 8);
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   const calculateHeight = () => {
     const navEl = navRef.current;
@@ -191,8 +202,11 @@ const CardNav = ({
     >
       <nav
         ref={navRef}
-        className={`card-nav ${isExpanded ? 'open' : ''} block h-[60px] p-0 rounded-xl shadow-md relative overflow-hidden will-change-[height]`}
-        style={{ backgroundColor: baseColor }}
+        className={`card-nav ${isExpanded ? 'open' : ''} block h-[60px] p-0 rounded-xl relative overflow-hidden will-change-[height] transition-all duration-300 border border-white/60 ${
+          isScrolled 
+            ? 'bg-white/85 backdrop-blur-md shadow-md' 
+            : 'bg-white/70 backdrop-blur-md shadow-[0_2px_10px_rgba(0,0,0,0.05)]'
+        }`}
       >
         <div className="card-nav-top absolute inset-x-0 top-0 h-[60px] flex items-center justify-between p-2 z-[2]">
           <div

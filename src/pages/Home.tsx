@@ -115,7 +115,7 @@ export default function Home() {
   const navItems = [
     {
       label: "Accueil",
-      bgColor: "linear-gradient(135deg, #0A6ABF 0%, #3B82F6 100%)",
+      bgColor: "linear-gradient(135deg, #008AA4 0%, #00B4D8 50%, #90E0EF 100%)",
       textColor: "#fff",
       links: [
         { label: "Accueil", ariaLabel: "Page d'accueil", onClick: () => { navigate('/'); window.scrollTo({ top: 0, behavior: 'smooth' }); } },
@@ -124,7 +124,7 @@ export default function Home() {
     },
     {
       label: "Obtenir mon arrêt", 
-      bgColor: "linear-gradient(135deg, #7C3AED 0%, #A855F7 100%)",
+      bgColor: "linear-gradient(135deg, #667EEA 0%, #764BA2 50%, #F093FB 100%)",
       textColor: "#fff",
       links: [
         { label: "Consultation", ariaLabel: "Consultation médicale", onClick: () => navigate('/consultation') },
@@ -133,7 +133,7 @@ export default function Home() {
     },
     {
       label: "À propos",
-      bgColor: "linear-gradient(135deg, #059669 0%, #10B981 100%)", 
+      bgColor: "linear-gradient(135deg, #11998E 0%, #38EF7D 50%, #C6FFDD 100%)", 
       textColor: "#fff",
       links: [
         { label: "Notre mission", ariaLabel: "Notre mission", onClick: () => navigate('/a-propos') },
@@ -157,7 +157,7 @@ export default function Home() {
       />
 
       {/* Hero Section - Ultra Modern */}
-      <section className="relative overflow-hidden py-12 bg-gradient-to-br from-blue-50/30 via-white to-pink-50/30 pt-32 md:pt-40">
+      <section className="relative overflow-hidden py-12 bg-gradient-to-br from-blue-50/30 via-white to-pink-50/30 pt-28 pb-10 md:pt-40">
         {/* Animated Background Elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-20 left-10 w-72 h-72 bg-blue-200/30 rounded-full blur-3xl animate-pulse"></div>
@@ -170,27 +170,21 @@ export default function Home() {
           <div className="relative flex flex-col md:flex-row gap-12 items-center">
             {/* Left side - Content */}
             <div className="flex-1">
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent leading-tight mb-6 min-h-[120px] md:min-h-[140px]">
-                <TextType 
-                  text={["Un diagnostic rapide, en ligne.", "Obtenez un arrêt maladie 24/7."]}
-                  typingSpeed={75}
-                  pauseDuration={1500}
-                  showCursor={true}
-                  cursorCharacter="|"
-                  className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent"
-                />
-            </h1>
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight mb-4">
+                Votre diagnostic et arrêt maladie en ligne
+              </h1>
               
-              <p className="text-base md:text-lg text-gray-700 mb-8 leading-relaxed">
-                Bienvenue sur <span className="font-semibold text-blue-600">Consult-Chrono</span>, la plateforme innovante offrant un diagnostic instantané et un arrêt de travail légal en quelques clics. Pour seulement <span className="font-bold text-pink-600">14€</span>, nos 323 médecins partenaires qualifiés vous délivrent votre arrêt sans quitter votre domicile.
+              <p className="text-base md:text-lg text-slate-600 mb-8 leading-relaxed">
+                Simple, rapide et légal — pour seulement <span className="font-bold text-[#008AA4]">14€</span>.
               </p>
               
               {/* CTA Buttons - Ultra Modern */}
-              <div className="flex flex-col sm:flex-row gap-4 mb-8">
-              <Button
-                size="lg"
-                onClick={() => navigate("/consultation")}
-                  className="group relative bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 text-white px-8 py-6 sm:px-10 rounded-2xl font-bold text-base sm:text-lg shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-110 overflow-hidden"
+              <div className="flex flex-col sm:flex-row gap-4 mb-3">
+              <div className="flex flex-col gap-2">
+                <Button
+                  size="lg"
+                  onClick={() => navigate("/consultation")}
+                  className="group relative isolate overflow-hidden bg-gradient-to-r from-[#008AA4] to-[#00B4D8] hover:shadow-[0_8px_24px_rgba(0,138,164,0.25)] text-white px-8 py-6 sm:px-10 rounded-xl font-bold text-base sm:text-lg transition-all duration-300 hover:scale-105 active:scale-[0.99]"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   <span className="relative flex items-center gap-3">
@@ -198,14 +192,18 @@ export default function Home() {
                     Obtenir mon arrêt maladie
                     <ArrowRight className="h-6 w-6 group-hover:translate-x-2 transition-transform duration-300" />
                   </span>
-              </Button>
+                </Button>
+                <p className="text-xs text-slate-500 text-center">
+                  Paiement sécurisé — Remboursé si non éligible
+                </p>
+              </div>
               <Button
                 size="lg"
                 variant="outline"
                   onClick={() => {
                     document.getElementById('process')?.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className="group border-2 border-purple-600 text-purple-700 hover:bg-purple-50 px-6 py-6 sm:px-8 rounded-2xl font-semibold text-sm sm:text-base transition-all duration-300 hover:scale-105"
+                  className="group rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 px-6 py-6 sm:px-8 font-semibold text-sm sm:text-base transition-all duration-300 hover:scale-105 active:scale-[0.99]"
               >
                   <span className="flex items-center gap-2">
                 Comment ça marche ?
@@ -214,19 +212,19 @@ export default function Home() {
               </Button>
               </div>
 
-              {/* Trust Indicators - Modern Pills */}
-              <div className="flex flex-wrap gap-3">
-                <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-md">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
-                  <span className="text-sm text-gray-700">Légal & conforme</span>
+              {/* Trust Indicators - Modern Cards */}
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                <div className="flex items-center gap-3 bg-[#F4FBFC] border border-[#E6F7FA] rounded-xl px-4 py-3 transition-transform hover:-translate-y-0.5 cursor-default">
+                  <Shield className="h-5 w-5 text-[#008AA4] flex-shrink-0" />
+                  <span className="text-sm font-semibold text-gray-800">Légal & conforme</span>
                 </div>
-                <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-md">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
-                  <span className="text-sm text-gray-700">Réponse 24h</span>
+                <div className="flex items-center gap-3 bg-[#F4FBFC] border border-[#E6F7FA] rounded-xl px-4 py-3 transition-transform hover:-translate-y-0.5 cursor-default">
+                  <Clock className="h-5 w-5 text-[#008AA4] flex-shrink-0" />
+                  <span className="text-sm font-semibold text-gray-800">Réponse 24h</span>
                 </div>
-                <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-md">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
-                  <span className="text-sm text-gray-700">RGPD</span>
+                <div className="flex items-center gap-3 bg-[#F4FBFC] border border-[#E6F7FA] rounded-xl px-4 py-3 transition-transform hover:-translate-y-0.5 cursor-default col-span-2 md:col-span-1">
+                  <Lock className="h-5 w-5 text-[#008AA4] flex-shrink-0" />
+                  <span className="text-sm font-semibold text-gray-800">RGPD</span>
                 </div>
               </div>
             </div>
