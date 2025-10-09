@@ -333,48 +333,30 @@
           document.getElementById('successIcon').classList.remove('hidden');
         }, 2000);
 
-        // Try to update payment status via API
-        if (sessionId) {
-          // Import Supabase client
-          const SUPABASE_URL = 'https://wyhqxrfxghqsjkzfhkjf.supabase.co';
-          const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5aHF4cmZ4Z2hxc2premZoa2pmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjg0NzAxMjYsImV4cCI6MjA0NDA0NjEyNn0.D3j2kJYx96NYPKeSJlN4cN_ckT9lVVR8VfeFT5ynOsA';
+        // Wait 3 seconds for webhook to update
+        await new Promise(resolve => setTimeout(resolve, 3000));
 
-          // Wait 3 seconds for webhook to update
-          await new Promise(resolve => setTimeout(resolve, 3000));
-
-          // Check if payment was updated by webhook
-          const response = await fetch(`${SUPABASE_URL}/rest/v1/consultations?payment_status=eq.pending&order=created_at.desc&limit=1`, {
-            headers: {
-              'apikey': SUPABASE_ANON_KEY,
-              'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-            }
-          });
-
-          const consultations = await response.json();
-          console.log('🔍 Found consultations:', consultations);
-
-          if (consultations && consultations.length > 0) {
-            const consultation = consultations[0];
-            console.log('⚠️ Payment still pending, updating manually...');
-
-            // Manual update as fallback
-            await fetch(`${SUPABASE_URL}/rest/v1/consultations?id=eq.${consultation.id}`, {
-              method: 'PATCH',
-              headers: {
-                'apikey': SUPABASE_ANON_KEY,
-                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                'Content-Type': 'application/json',
-                'Prefer': 'return=minimal'
-              },
-              body: JSON.stringify({
-                payment_status: 'done'
-              })
-            });
-
-            console.log('✅ Payment status updated manually');
-          } else {
-            console.log('✅ Payment already confirmed by webhook');
+        // Try to update payment status via our API (fallback if webhook fails)
+        console.log('🔄 Calling update-payment-status API...');
+        
+        const response = await fetch('/api/update-payment-status', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
           }
+        });
+
+        const result = await response.json();
+        console.log('📊 API response:', result);
+
+        if (result.success) {
+          if (result.alreadyUpdated) {
+            console.log('✅ Payment already confirmed by webhook');
+          } else {
+            console.log('✅ Payment status updated manually via API');
+          }
+        } else {
+          console.error('❌ Failed to update payment status:', result.error);
         }
       } catch (error) {
         console.error('❌ Error updating payment status:', error);
