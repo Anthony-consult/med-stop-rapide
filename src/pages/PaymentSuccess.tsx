@@ -12,24 +12,14 @@ export default function PaymentSuccess() {
   const [paymentStatus, setPaymentStatus] = useState<'checking' | 'confirmed' | 'failed'>('checking');
 
   useEffect(() => {
-    // Redirect from www to non-www if needed, but use the correct success URL
-    if (window.location.hostname === 'www.consult-chrono.fr') {
-      const sessionId = new URLSearchParams(window.location.search).get('session_id');
-      const newUrl = sessionId 
-        ? `https://consult-chrono.fr/?payment=success&session_id=${sessionId}`
-        : 'https://consult-chrono.fr/?payment=success';
-      window.location.href = newUrl;
-      return;
-    }
-
-    // Scroll to top on mount
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-
-    // Clear consultation ID from localStorage
-    localStorage.removeItem('consultation_id');
-
-    // Check payment status
-    checkPaymentStatus();
+    // ALWAYS redirect to the correct success URL (this page should not be accessed directly)
+    const sessionId = new URLSearchParams(window.location.search).get('session_id');
+    const newUrl = sessionId 
+      ? `https://consult-chrono.fr/?payment=success&session_id=${sessionId}`
+      : 'https://consult-chrono.fr/?payment=success';
+    
+    console.log('🔄 Redirecting from PaymentSuccess page to:', newUrl);
+    window.location.href = newUrl;
   }, []);
 
   const checkPaymentStatus = async () => {
