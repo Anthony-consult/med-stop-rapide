@@ -69,35 +69,71 @@ export default async function handler(req, res) {
         console.log('💰 CHECKOUT SESSION COMPLETED');
         console.log('💰 Session ID:', session.id);
         console.log('💰 Payment status:', session.payment_status);
-        console.log('💰 Client reference ID:', session.client_reference_id);
         console.log('💰 Payment intent:', session.payment_intent);
-        console.log('💰 Full session object:', JSON.stringify(session, null, 2));
+        console.log('💰 Metadata:', session.metadata);
         
-        // Get consultation ID from client_reference_id
-        const consultationId = session.client_reference_id;
+        // Get form data from metadata
+        const formDataJson = session.metadata?.formData;
         const paymentIntentId = session.payment_intent;
         
-        console.log('🔍 Extracted consultation ID:', consultationId);
-        console.log('🔍 Extracted payment intent ID:', paymentIntentId);
+        console.log('📦 Form data JSON exists:', !!formDataJson);
         
-        if (!consultationId) {
-          console.error('❌ No consultation ID found in session');
-          console.error('❌ Session keys:', Object.keys(session));
-          return res.status(400).json({ error: 'No consultation ID' });
+        if (!formDataJson) {
+          console.error('❌ No formData found in session metadata');
+          console.error('❌ Metadata keys:', Object.keys(session.metadata || {}));
+          return res.status(400).json({ error: 'No form data in metadata' });
         }
 
-        console.log('📝 Attempting to update Supabase...');
+        let formData;
+        try {
+          formData = JSON.parse(formDataJson);
+          console.log('✅ Form data parsed successfully');
+          console.log('📝 Form data fields:', Object.keys(formData));
+        } catch (parseError) {
+          console.error('❌ Failed to parse form data JSON:', parseError);
+          return res.status(400).json({ error: 'Invalid form data JSON' });
+        }
+
+        console.log('📝 Attempting to insert into Supabase...');
         console.log('📝 Supabase URL:', process.env.VITE_SUPABASE_URL);
         console.log('📝 Service role key exists:', !!process.env.SUPABASE_SERVICE_ROLE_KEY);
         
-        // Update consultation payment status
+        // Prepare consultation data for insertion
+        const consultationData = {
+          maladie_presumee: formData.maladie_presumee,
+          symptomes: formData.symptomes,
+          diagnostic_anterieur: formData.diagnostic_anterieur,
+          autres_symptomes: formData.autres_symptomes || null,
+          zones_douleur: formData.zones_douleur,
+          apparition_soudaine: formData.apparition_soudaine,
+          medicaments_reguliers: formData.medicaments_reguliers,
+          facteurs_risque: formData.facteurs_risque,
+          type_arret: formData.type_arret,
+          profession: formData.profession,
+          date_debut: formData.date_debut,
+          date_fin: formData.date_fin,
+          date_fin_lettres: formData.date_fin_lettres,
+          nom_prenom: formData.nom_prenom,
+          date_naissance: formData.date_naissance,
+          email: formData.email,
+          adresse: formData.adresse,
+          code_postal: formData.code_postal,
+          ville: formData.ville,
+          pays: formData.pays,
+          situation_pro: formData.situation_pro,
+          localisation_medecin: formData.localisation_medecin,
+          numero_securite_sociale: formData.numero_securite_sociale,
+          conditions_acceptees: formData.conditions_acceptees,
+          payment_status: 'done', // Directly set to done
+          payment_id: paymentIntentId,
+        };
+
+        console.log('💾 Inserting consultation with payment_status = done');
+        
+        // Insert consultation into Supabase
         const { data, error } = await supabase
           .from('consultations')
-          .update({
-            payment_status: 'done',
-            payment_id: paymentIntentId,
-          })
-          .eq('id', consultationId)
+          .insert([consultationData])
           .select()
           .single();
 
@@ -110,8 +146,10 @@ export default async function handler(req, res) {
           throw error;
         }
 
-        console.log('✅ PAYMENT STATUS UPDATED SUCCESSFULLY!');
-        console.log('✅ Updated data:', JSON.stringify(data, null, 2));
+        console.log('✅ CONSULTATION INSERTED SUCCESSFULLY!');
+        console.log('✅ Inserted data:', JSON.stringify(data, null, 2));
+        console.log('✅ Consultation ID:', data.id);
+        console.log('✅ Payment status:', data.payment_status);
         
         break;
       }

@@ -7,7 +7,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
 import { clearFormData } from "@/lib/storage";
 
 type Step20Data = z.infer<typeof step20Schema>;
@@ -45,14 +44,17 @@ export function Step20({ form, onNext, onPrev, formData }: StepComponentProps<St
       // Get all form data from formData prop
       const allFormData = formData as ConsultationFormData;
       
-      console.log("📝 Sauvegarde des données dans Supabase...", allFormData);
+      console.log("💳 Création de la session Stripe...", {
+        email: allFormData.email,
+        nom_prenom: allFormData.nom_prenom,
+      });
 
-      // Prepare data for Supabase
+      // Prepare data for Stripe (will be stored in metadata)
       const consultationData = {
         maladie_presumee: allFormData.maladie_presumee,
         symptomes: allFormData.symptomes,
         diagnostic_anterieur: allFormData.diagnostic_anterieur,
-        autres_symptomes: allFormData.autres_symptomes,
+        autres_symptomes: allFormData.autres_symptomes || "",
         zones_douleur: allFormData.zones_douleur,
         apparition_soudaine: allFormData.apparition_soudaine,
         medicaments_reguliers: allFormData.medicaments_reguliers,
@@ -73,49 +75,53 @@ export function Step20({ form, onNext, onPrev, formData }: StepComponentProps<St
         localisation_medecin: allFormData.localisation_medecin,
         numero_securite_sociale: allFormData.numero_securite_sociale,
         conditions_acceptees: termsChecked,
-        payment_status: "pending",
       };
 
-      const { data: savedData, error } = await supabase
-        .from("consultations")
-        .insert([consultationData])
-        .select()
-        .single();
+      // Call /api/checkout to create Stripe session
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          formData: consultationData,
+        }),
+      });
 
-      if (error) {
-        console.error("❌ Erreur Supabase:", error);
-        throw error;
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Erreur lors de la création de la session de paiement');
       }
 
-      console.log("✅ Consultation sauvegardée:", savedData);
+      const { url: stripeUrl } = await response.json();
+
+      if (!stripeUrl) {
+        throw new Error('URL Stripe non reçue');
+      }
+
+      console.log('✅ Session Stripe créée');
+      console.log('🔗 Stripe URL:', stripeUrl);
 
       // Clear form data
       clearFormData();
 
       toast({
-        title: "✅ Consultation enregistrée",
-        description: "Redirection vers le paiement de 14 €...",
+        title: "✅ Redirection vers le paiement",
+        description: "Vous allez être redirigé vers Stripe...",
       });
 
-      // Redirect to Stripe payment with consultation ID
-      const consultationId = savedData.id;
-      const stripeUrl = `https://buy.stripe.com/test_aFa6oHfLFcnDgJ8eHY4Ja00?client_reference_id=${consultationId}`;
-      
-      console.log('🔗 REDIRECTION STRIPE');
-      console.log('🔗 Consultation ID:', consultationId);
-      console.log('🔗 Stripe URL:', stripeUrl);
-      
+      // Redirect to Stripe Checkout
       setTimeout(() => {
-        console.log('🚀 Redirecting to Stripe...');
+        console.log('🚀 Redirecting to Stripe Checkout...');
         window.location.href = stripeUrl;
-      }, 1500);
+      }, 1000);
 
     } catch (error) {
-      console.error("❌ Erreur lors de la sauvegarde:", error);
+      console.error("❌ Erreur lors de la création de la session:", error);
       
       toast({
         title: "❌ Erreur",
-        description: "Impossible d'enregistrer votre consultation. Veuillez réessayer.",
+        description: error instanceof Error ? error.message : "Impossible de créer la session de paiement. Veuillez réessayer.",
         variant: "destructive",
       });
       
