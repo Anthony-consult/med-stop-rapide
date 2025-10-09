@@ -40,6 +40,15 @@ export default function Home() {
   const [paymentStatus, setPaymentStatus] = useState<'checking' | 'confirmed' | 'failed' | null>(null);
   const [isCheckingPayment, setIsCheckingPayment] = useState(false);
 
+  // Redirect from www to non-www
+  useEffect(() => {
+    if (window.location.hostname === 'www.consult-chrono.fr') {
+      console.log('🔄 Redirecting from www to non-www');
+      window.location.href = 'https://consult-chrono.fr' + window.location.pathname + window.location.search;
+      return;
+    }
+  }, []);
+
   // Check if this is a payment success redirect
   useEffect(() => {
     const paymentSuccess = searchParams.get('payment');
