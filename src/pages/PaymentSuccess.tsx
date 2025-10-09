@@ -12,9 +12,13 @@ export default function PaymentSuccess() {
   const [paymentStatus, setPaymentStatus] = useState<'checking' | 'confirmed' | 'failed'>('checking');
 
   useEffect(() => {
-    // Redirect from www to non-www if needed
+    // Redirect from www to non-www if needed, but use the correct success URL
     if (window.location.hostname === 'www.consult-chrono.fr') {
-      window.location.href = 'https://consult-chrono.fr/payment/success' + window.location.search;
+      const sessionId = new URLSearchParams(window.location.search).get('session_id');
+      const newUrl = sessionId 
+        ? `https://consult-chrono.fr/?payment=success&session_id=${sessionId}`
+        : 'https://consult-chrono.fr/?payment=success';
+      window.location.href = newUrl;
       return;
     }
 
