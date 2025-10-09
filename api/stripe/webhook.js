@@ -25,6 +25,13 @@ export default async function handler(req, res) {
   console.log('🔔 Webhook called - Method:', req.method);
   console.log('🔔 Headers:', JSON.stringify(req.headers, null, 2));
   
+  // Debug environment variables
+  console.log('🔍 Environment check:');
+  console.log('🔍 STRIPE_SECRET_KEY exists:', !!process.env.STRIPE_SECRET_KEY);
+  console.log('🔍 STRIPE_WEBHOOK_SECRET exists:', !!process.env.STRIPE_WEBHOOK_SECRET);
+  console.log('🔍 VITE_SUPABASE_URL exists:', !!process.env.VITE_SUPABASE_URL);
+  console.log('🔍 SUPABASE_SERVICE_ROLE_KEY exists:', !!process.env.SUPABASE_SERVICE_ROLE_KEY);
+  
   if (req.method !== 'POST') {
     console.log('❌ Wrong method:', req.method);
     return res.status(405).json({ error: 'Method not allowed' });
