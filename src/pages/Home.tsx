@@ -11,6 +11,7 @@ import { useEffect } from "react";
 import TextType from "@/components/TextType";
 import RotatingText from "@/components/RotatingText";
 import CardNav from "@/components/CardNav";
+import StructuredData from "@/components/StructuredData";
 import {
   ClipboardCheck,
   FileText,
@@ -95,20 +96,28 @@ export default function Home() {
 
   const faqs = [
     {
-      question: "Qui peut utiliser ce service ?",
-      answer: "Toute personne majeure résidant en France pour des affections courantes sans signe de gravité.",
+      question: "Est-ce qu'un arrêt maladie en ligne est légal ?",
+      answer: "Oui. Les arrêts maladie délivrés en ligne sont reconnus par la législation française, à condition qu'ils soient validés par un médecin agréé. Chaque document transmis par Consult-Chrono respecte le cadre légal en vigueur et est accepté par les employeurs et la sécurité sociale.",
     },
     {
-      question: "Combien de temps pour recevoir une réponse ?",
-      answer: "En général sous 24 heures. En cas de besoin, nous vous recontacterons.",
+      question: "Quels types de maladies sont concernés ?",
+      answer: "Nos médecins peuvent délivrer un arrêt maladie pour les affections courantes comme la gastro-entérite, la fatigue, le stress, la migraine, ou les symptômes de Covid. Les cas graves nécessitant un suivi en présentiel ne sont pas concernés.",
     },
     {
-      question: "Le service est-il légal en France ?",
-      answer: "Oui. La téléconsultation est encadrée en France et nos médecins sont inscrits à l'Ordre.",
+      question: "Faut-il un médecin traitant pour obtenir un arrêt maladie en ligne ?",
+      answer: "Non. Vous pouvez faire la démarche directement via notre formulaire sécurisé. Nos médecins partenaires vérifient les informations et valident votre document sans avoir besoin d'un médecin traitant.",
+    },
+    {
+      question: "Combien de temps faut-il pour recevoir mon arrêt ?",
+      answer: "En général, la réponse intervient sous 24 heures après validation de votre formulaire. Vous recevez directement votre document médical par email.",
+    },
+    {
+      question: "Mon arrêt maladie en ligne sera-t-il accepté par mon employeur ?",
+      answer: "Oui. Les documents émis via Consult-Chrono sont conformes au format légal d'un arrêt de travail et peuvent être transmis à votre employeur ou à la sécurité sociale comme un arrêt classique.",
     },
     {
       question: "Quand ne pas utiliser Consult-Chrono ?",
-      answer: "En cas de symptômes graves ou d'urgence, appelez immédiatement le 15.",
+      answer: "En cas de symptômes graves ou d'urgence (douleur thoracique intense, difficulté respiratoire sévère, perte de conscience), appelez immédiatement le 15 (SAMU). Notre service est destiné aux affections courantes sans signe de gravité.",
     },
   ];
 
@@ -144,6 +153,9 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white">
+      {/* Structured Data for SEO */}
+      <StructuredData faqs={faqs} />
+      
       {/* Card Navigation */}
       <CardNav
         logo="/logo-big.png"
@@ -438,7 +450,7 @@ export default function Home() {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-8 md:py-16 bg-white relative">
+      <section id="faq" className="py-8 md:py-16 bg-white relative">
         <div className="absolute inset-0 bg-gradient-to-b from-pink-50/20 via-transparent to-blue-50/20 pointer-events-none"></div>
         <div className="max-w-screen-lg mx-auto px-4 sm:px-6 relative z-10">
           <div className="text-center mb-8">
@@ -506,6 +518,37 @@ export default function Home() {
               </div>
             </div>
           </Card>
+        </div>
+      </section>
+
+      {/* Section SEO - Tout savoir sur l'arrêt maladie en ligne */}
+      <section id="infos-arret-maladie" className="max-w-4xl mx-auto px-4 py-12 text-slate-700 bg-white">
+        <h2 className="text-2xl font-semibold text-slate-800 mb-4">
+          Tout savoir sur l'arrêt maladie en ligne
+        </h2>
+        <p className="leading-relaxed mb-4">
+          <strong>Obtenir un arrêt maladie rapidement</strong> est désormais possible grâce à la téléconsultation. 
+          Consult-Chrono vous permet de recevoir un <strong>arrêt maladie en ligne</strong> en quelques minutes, 
+          sans déplacement ni rendez-vous physique. Ce service s'adresse à toute personne souffrant d'une affection 
+          courante comme la grippe, une gastro-entérite, du stress, des migraines ou des symptômes liés au Covid-19.
+        </p>
+        <p className="leading-relaxed mb-4">
+          Chaque document est <strong>légal et conforme</strong> à la réglementation française. Il est délivré par 
+          un médecin agréé et peut être transmis à votre employeur ou à la sécurité sociale comme un arrêt classique. 
+          Vous n'avez pas besoin d'un médecin traitant : notre formulaire sécurisé permet à nos médecins partenaires 
+          de valider votre demande en toute conformité.
+        </p>
+        <p className="leading-relaxed mb-4">
+          Le traitement de votre demande est rapide : en général, vous recevez votre <strong>arrêt maladie légal en ligne</strong> par 
+          email sous 24 heures. Consult-Chrono simplifie vos démarches tout en respectant le cadre légal et médical en vigueur.
+        </p>
+        <div className="mt-6 space-x-4">
+          <a href="#faq" className="text-[#008AA4] underline hover:text-[#006F82] transition-colors">
+            Voir la FAQ
+          </a>
+          <a href="/terms" className="text-[#008AA4] underline hover:text-[#006F82] transition-colors">
+            Conditions légales
+          </a>
         </div>
       </section>
 
