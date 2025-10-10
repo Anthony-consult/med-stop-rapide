@@ -60,27 +60,10 @@ export default async function handler(req, res) {
 
     console.log('📦 Metadata keys:', Object.keys(metadata));
 
-    // Get price ID from environment variable or use default based on environment
-    const isTestMode = process.env.STRIPE_SECRET_KEY?.startsWith('sk_test_');
-    
-    // Use environment variable if set, otherwise use appropriate default
-    let priceId = process.env.STRIPE_PRICE_ID;
-    
-    if (!priceId) {
-      if (isTestMode) {
-        // For test mode, you need to create a test price in your Stripe dashboard
-        // or use the test price ID that corresponds to your live price
-        priceId = 'price_1SG0iHHo4fFKK68LxMXXr2EN'; // This should be your TEST price ID
-        console.log('⚠️ Using test price ID - make sure this exists in your test dashboard');
-      } else {
-        // For live mode
-        priceId = 'price_1SG0iHHo4fFKK68LxMXXr2EN'; // This is your LIVE price ID
-      }
-    }
+    // Get price ID from environment variable or use default
+    const priceId = process.env.STRIPE_PRICE_ID || 'price_1SG0iHHo4fFKK68LxMXXr2EN';
     
     console.log('💰 Using Stripe Price ID:', priceId);
-    console.log('🔧 Test mode:', isTestMode);
-    console.log('🔧 Secret key starts with:', process.env.STRIPE_SECRET_KEY?.substring(0, 8));
 
     // Create Stripe Checkout Session
     const session = await stripe.checkout.sessions.create({

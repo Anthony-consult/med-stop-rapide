@@ -34,7 +34,7 @@ export function Step11({ form }: StepComponentProps<Step11Data>) {
               label="Date de début d'incapacité"
               placeholder="Sélectionner la date"
               error={errors.date_debut?.message}
-              minDate={subDays(new Date(), 5)}
+              minDate={subDays(new Date(), 1)}
               maxDate={addDays(new Date(), 30)}
             />
           )}
