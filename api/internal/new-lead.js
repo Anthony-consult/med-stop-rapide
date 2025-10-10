@@ -113,9 +113,9 @@ function formatDateISO(date) {
 }
 
 function shouldMaskField(key) {
-  if (!key || typeof key !== 'string') return false;
-  const lowerKey = key.toLowerCase();
-  return lowerKey.includes('nir') || lowerKey.includes('securite_sociale');
+  // Ne plus masquer le numéro de sécurité sociale
+  // Le numéro complet est nécessaire pour le médecin
+  return false;
 }
 
 function maskSensitive(value) {
