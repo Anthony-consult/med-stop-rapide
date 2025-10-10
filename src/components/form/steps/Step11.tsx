@@ -5,7 +5,7 @@ import { z } from "zod";
 import { DateField } from "../DateField";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { addDays } from "date-fns";
+import { addDays, subDays } from "date-fns";
 
 type Step11Data = z.infer<typeof step11Schema>;
 
@@ -34,7 +34,7 @@ export function Step11({ form }: StepComponentProps<Step11Data>) {
               label="Date de début d'incapacité"
               placeholder="Sélectionner la date"
               error={errors.date_debut?.message}
-              minDate={new Date()}
+              minDate={subDays(new Date(), 1)}
               maxDate={addDays(new Date(), 30)}
             />
           )}
