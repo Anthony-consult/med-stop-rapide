@@ -227,6 +227,7 @@ export const maladiesOptions = [
 
 export const symptomesOptions = [
   { value: "fievre", label: "Fièvre" },
+  { value: "douleurs", label: "Douleurs" },
   { value: "nausees", label: "Nausées" },
   { value: "diarrhee", label: "Diarrhée" },
   { value: "toux_seche", label: "Toux sèche" },
