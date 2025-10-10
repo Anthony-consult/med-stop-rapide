@@ -190,7 +190,7 @@ export default function Home() {
                 <span className="relative inline-block">
                   <span className="absolute inset-0 bg-gradient-to-r from-[#008AA4]/20 to-[#00B4D8]/20 blur-xl"></span>
                   <span className="relative bg-gradient-to-r from-[#008AA4] to-[#00B4D8] bg-clip-text text-transparent font-extrabold">
-                    en 4 minutes.
+                    en 4 minutes
                   </span>
                 </span>
               </h1>
@@ -200,7 +200,7 @@ export default function Home() {
               </p>
               
               <p className="text-base md:text-lg font-semibold text-[#008AA4] mb-8">
-                simple et 100 % légal.
+                simple et 100 % légal
               </p>
               
               {/* CTA Buttons - Ultra Modern */}
