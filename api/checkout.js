@@ -60,19 +60,17 @@ export default async function handler(req, res) {
 
     console.log('📦 Metadata keys:', Object.keys(metadata));
 
+    // Get price ID from environment variable or use default
+    const priceId = process.env.STRIPE_PRICE_ID || 'price_1SG0iHHo4fFKK68LxMXXr2EN';
+    
+    console.log('💰 Using Stripe Price ID:', priceId);
+
     // Create Stripe Checkout Session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
         {
-          price_data: {
-            currency: 'eur',
-            product_data: {
-              name: 'Arrêt de travail médical',
-              description: 'Consultation médicale en ligne - Arrêt de travail',
-            },
-            unit_amount: 1400, // 14.00 EUR in cents
-          },
+          price: priceId,
           quantity: 1,
         },
       ],
