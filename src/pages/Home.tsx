@@ -195,14 +195,12 @@ export default function Home() {
                 </span>
               </h1>
               
-              <p className="text-base md:text-lg text-slate-600 mb-4 leading-relaxed">
-                Répondez à quelques questions, validez votre demande,
-                <br className="hidden sm:block" />
-                et recevez votre document médical directement par email.
+              <p className="text-base md:text-lg text-slate-600 mb-2 leading-relaxed">
+                Répondez à quelques questions et recevez votre arrêt maladie en ligne
               </p>
               
-              <p className="text-base font-semibold text-[#008AA4] mb-8">
-                Simple, légal, sans attente.
+              <p className="text-base md:text-lg font-semibold text-[#008AA4] mb-8">
+                simple et 100 % légal.
               </p>
               
               {/* CTA Buttons - Ultra Modern */}
