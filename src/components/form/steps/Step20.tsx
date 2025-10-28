@@ -61,6 +61,7 @@ export function Step20({ form, onNext, onPrev, formData }: StepComponentProps<St
 
       // Prepare data for Stripe (will be stored in metadata)
       console.log("💳 STEP 2: Preparing consultation data");
+      
       const consultationData = {
         maladie_presumee: allFormData.maladie_presumee,
         symptomes: allFormData.symptomes,

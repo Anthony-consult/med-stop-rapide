@@ -4,18 +4,10 @@ import { z } from "zod";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Mail, CheckCircle } from "lucide-react";
+import { step14MergedSchema } from "@/lib/validation/consultation-schema";
 
-// Merged schema for both email fields
-const mergedEmailSchema = z.object({
-  email: z.string().email("Adresse e-mail invalide"),
-  email_confirmation: z.string().email("Adresse e-mail invalide"),
-}).refine(
-  (data) => data.email === data.email_confirmation,
-  {
-    message: "Les adresses e-mail ne correspondent pas",
-    path: ["email_confirmation"],
-  }
-);
+// Use the same schema from validation file
+const mergedEmailSchema = step14MergedSchema;
 
 type Step14MergedData = z.infer<typeof mergedEmailSchema>;
 
@@ -44,6 +36,7 @@ export function Step14Merged({ form }: StepComponentProps<Step14MergedData>) {
               {...field}
               id="email"
               type="email"
+              required
               placeholder="votre.email@exemple.fr"
               className={`text-[16px] min-h-[48px] ${
                 errors.email ? "border-red-500" : ""
@@ -51,6 +44,7 @@ export function Step14Merged({ form }: StepComponentProps<Step14MergedData>) {
               inputMode="email"
               autoComplete="email"
               aria-invalid={errors.email ? "true" : "false"}
+              onChange={(e) => field.onChange(e.target.value.trim())}
             />
           )}
         />
@@ -79,6 +73,7 @@ export function Step14Merged({ form }: StepComponentProps<Step14MergedData>) {
                 {...field}
                 id="email_confirmation"
                 type="email"
+                required
                 placeholder="Saisissez à nouveau votre e-mail"
                 className={`text-[16px] min-h-[48px] ${
                   errors.email_confirmation 
@@ -90,6 +85,7 @@ export function Step14Merged({ form }: StepComponentProps<Step14MergedData>) {
                 inputMode="email"
                 autoComplete="email"
                 aria-invalid={errors.email_confirmation ? "true" : "false"}
+                onChange={(e) => field.onChange(e.target.value.trim())}
               />
               {emailsMatch && (
                 <CheckCircle className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-green-600" />

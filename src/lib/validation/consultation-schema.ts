@@ -127,8 +127,16 @@ export const step13Schema = z.object({
 
 // Step 14: Email merged (both fields on same page)
 export const step14MergedSchema = z.object({
-  email: z.string().email("Adresse e-mail invalide"),
-  email_confirmation: z.string().email("Adresse e-mail invalide"),
+  email: z
+    .string()
+    .trim()
+    .min(1, "L'adresse e-mail est obligatoire")
+    .email("Adresse e-mail invalide"),
+  email_confirmation: z
+    .string()
+    .trim()
+    .min(1, "L'adresse e-mail est obligatoire")
+    .email("Adresse e-mail invalide"),
 }).refine(
   (data) => data.email === data.email_confirmation,
   {
@@ -139,11 +147,19 @@ export const step14MergedSchema = z.object({
 
 // Keep old schemas for backward compatibility (not used anymore)
 export const step14Schema = z.object({
-  email: z.string().email("Adresse e-mail invalide"),
+  email: z
+    .string()
+    .trim()
+    .min(1, "L'adresse e-mail est obligatoire")
+    .email("Adresse e-mail invalide"),
 });
 
 export const step15Schema = z.object({
-  email_confirmation: z.string().email("Adresse e-mail invalide"),
+  email_confirmation: z
+    .string()
+    .trim()
+    .min(1, "L'adresse e-mail est obligatoire")
+    .email("Adresse e-mail invalide"),
 });
 
 // Step 16: Adresse postale

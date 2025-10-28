@@ -112,6 +112,23 @@ function formatDateISO(date) {
   }
 }
 
+function formatDateSimple(date) {
+  if (!date) return '';
+  try {
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    if (isNaN(dateObj.getTime())) return '';
+    
+    return new Intl.DateTimeFormat('fr-FR', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      timeZone: 'Europe/Paris'
+    }).format(dateObj);
+  } catch (error) {
+    return '';
+  }
+}
+
 function shouldMaskField(key) {
   // Ne plus masquer le numéro de sécurité sociale
   // Le numéro complet est nécessaire pour le médecin
@@ -130,6 +147,13 @@ function maskSensitive(value) {
 
 function formatValue(key, value) {
   if (value === null || value === undefined || value === '') return '';
+  
+  // Format dates without time
+  const dateOnlyFields = ['date_debut', 'date_fin', 'date_naissance'];
+  if (dateOnlyFields.includes(key)) {
+    return formatDateSimple(value);
+  }
+  
   const stringValue = String(value);
   
   if (shouldMaskField(key)) {

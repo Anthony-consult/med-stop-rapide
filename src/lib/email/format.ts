@@ -46,6 +46,30 @@ export function formatDateISO(date?: string | Date): string {
 }
 
 /**
+ * Formats a date to French locale format (date only, no time)
+ */
+export function formatDateSimple(date?: string | Date): string {
+  if (!date) return '';
+  
+  try {
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    
+    // Check if date is valid
+    if (isNaN(dateObj.getTime())) return '';
+    
+    return new Intl.DateTimeFormat('fr-FR', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      timeZone: 'Europe/Paris'
+    }).format(dateObj);
+  } catch (error) {
+    console.error('Error formatting date:', error);
+    return '';
+  }
+}
+
+/**
  * Formats a key to human-readable label
  * Replaces underscores with spaces and capitalizes
  */
@@ -72,6 +96,12 @@ export function shouldMaskField(key: string): boolean {
  */
 export function formatValue(key: string, value: any): string {
   if (value === null || value === undefined || value === '') return '';
+  
+  // Format dates without time
+  const dateOnlyFields = ['date_debut', 'date_fin', 'date_naissance'];
+  if (dateOnlyFields.includes(key)) {
+    return formatDateSimple(value);
+  }
   
   const stringValue = String(value);
   

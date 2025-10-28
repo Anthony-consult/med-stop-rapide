@@ -1,4 +1,4 @@
-import { formatKey, formatValue, formatDateISO } from './format';
+import { formatKey, formatValue, formatDateISO, formatDateSimple } from './format';
 
 export interface EmailResult {
   html: string;
