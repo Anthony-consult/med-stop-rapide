@@ -20,7 +20,6 @@ export interface StepComponentProps<T extends FieldValues = FieldValues> {
   onNext: () => void;
   onPrev?: () => void;
   formData?: Partial<ConsultationFormData>;
-  onAutoFill?: () => void;
 }
 
 interface FormWizardProps {
@@ -80,73 +79,6 @@ export function FormWizard({ steps, onComplete }: FormWizardProps) {
     }
   };
 
-  const handleAutoFill = () => {
-    // Données de test pré-remplies - TOUTES les données nécessaires
-    const today = new Date();
-    const dateFin = new Date(today);
-    dateFin.setDate(dateFin.getDate() + 3); // +3 jours
-    
-    const testData: Partial<ConsultationFormData> = {
-      // Step 1
-      maladie_presumee: "gastro",
-      // Step 2
-      symptomes: ["fievre", "douleurs", "nausees"],
-      // Step 3
-      diagnostic_anterieur: "non",
-      // Step 4
-      autres_symptomes: "Maux de tête et fatigue générale depuis quelques jours",
-      // Step 5
-      zones_douleur: ["ventre", "tete"],
-      // Step 6
-      apparition_soudaine: "non",
-      // Step 7
-      medicaments_reguliers: "Aucun",
-      // Step 8
-      facteurs_risque: [],
-      // Step 9
-      type_arret: "nouvel",
-      // Step 10
-      profession: "Employé de bureau",
-      // Step 11
-      date_debut: today,
-      date_fin: dateFin,
-      date_fin_lettres: "TROIS",
-      // Step 12
-      nom_prenom: "DUPONT JEAN",
-      // Step 13
-      date_naissance: new Date("1990-01-15"),
-      // Step 14
-      email: "test@example.com",
-      email_confirmation: "test@example.com",
-      // Step 15 (Step16)
-      adresse: "123 RUE DE TEST",
-      code_postal: "75001",
-      ville: "PARIS",
-      pays: "FR",
-      // Step 16 (Step17)
-      situation_pro: "employe",
-      // Step 17 (Step18)
-      localisation_medecin: "Paris",
-      // Step 18 (Step19)
-      numero_securite_sociale: "190010112345678",
-      // Step 19 (Step20)
-      conditions_acceptees: true,
-    };
-    
-    // Mettre à jour formData et sauvegarder
-    setFormData(testData);
-    saveFormData(testData);
-    
-    // Sauter directement à la dernière étape (Step 20 - Paiement)
-    // Index 18 car il y a 19 steps (0-18)
-    setCurrentStep(steps.length - 1);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    
-    toast({
-      title: "✅ Quick Test activé",
-      description: "Formulaire rempli automatiquement. Vous êtes à l'étape de paiement.",
-    });
-  };
 
   const StepComponent = currentStepConfig.component;
 
@@ -159,7 +91,7 @@ export function FormWizard({ steps, onComplete }: FormWizardProps) {
       <div className="flex-1 overflow-y-auto pb-32">
         {isPaymentStep ? (
           // Payment step has its own full-screen layout
-          <StepComponent form={form} onNext={handleNext} onPrev={handlePrev} formData={formData} onAutoFill={handleAutoFill} />
+          <StepComponent form={form} onNext={handleNext} onPrev={handlePrev} formData={formData} />
         ) : (
           // Regular steps use the standard layout
           <div className="max-w-sm mx-auto px-4 py-6">
@@ -177,7 +109,7 @@ export function FormWizard({ steps, onComplete }: FormWizardProps) {
 
             {/* Step content in card */}
             <div className="bg-white rounded-2xl border border-gray-200 shadow-md p-6">
-              <StepComponent form={form} onNext={handleNext} formData={formData} onAutoFill={handleAutoFill} />
+              <StepComponent form={form} onNext={handleNext} formData={formData} />
             </div>
           </div>
         )}
