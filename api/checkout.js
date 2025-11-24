@@ -3,9 +3,15 @@
 
 import Stripe from 'stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
+const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY || '';
+
+if (!STRIPE_SECRET_KEY) {
+  console.error('❌ STRIPE_SECRET_KEY is not configured in environment variables');
+}
+
+const stripe = STRIPE_SECRET_KEY ? new Stripe(STRIPE_SECRET_KEY, {
   apiVersion: '2023-10-16',
-});
+}) : null;
 
 export const config = {
   api: {
@@ -21,11 +27,21 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  if (!stripe) {
+    console.error('❌ Stripe not initialized - STRIPE_SECRET_KEY missing');
+    return res.status(500).json({ 
+      error: 'Stripe not configured',
+      message: 'STRIPE_SECRET_KEY environment variable is required'
+    });
+  }
+
   try {
+    console.log('📦 Request body:', JSON.stringify(req.body, null, 2));
     const { formData, consultationId } = req.body;
 
     if (!formData) {
       console.error('❌ No formData provided');
+      console.error('❌ Request body keys:', Object.keys(req.body || {}));
       return res.status(400).json({ error: 'Form data is required' });
     }
 
@@ -66,6 +82,11 @@ export default async function handler(req, res) {
     console.log('💰 Using Stripe Price ID:', priceId);
 
     // Create Stripe Checkout Session
+    console.log('🔄 Creating Stripe checkout session...');
+    console.log('🔄 Price ID:', priceId);
+    console.log('🔄 Customer email:', formData.email);
+    console.log('🔄 Consultation ID:', consultationId);
+    
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
@@ -104,10 +125,25 @@ export default async function handler(req, res) {
 
   } catch (error) {
     console.error('❌ Error creating checkout session:', error);
-    return res.status(500).json({ 
-      error: 'Failed to create checkout session',
-      message: error.message 
+    console.error('❌ Error details:', {
+      message: error.message,
+      type: error.type,
+      code: error.code,
+      statusCode: error.statusCode,
+      stack: error.stack
     });
+    
+    // S'assurer qu'on renvoie toujours une réponse JSON valide
+    if (!res.headersSent) {
+      return res.status(500).json({ 
+        error: 'Failed to create checkout session',
+        message: error.message,
+        type: error.type || 'Unknown',
+        code: error.code || 'UNKNOWN_ERROR'
+      });
+    } else {
+      console.error('⚠️ Response already sent, cannot send error response');
+    }
   }
 }
 

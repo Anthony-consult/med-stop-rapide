@@ -130,45 +130,20 @@ export function Step20({ form, onNext, onPrev, formData }: StepComponentProps<St
       console.log('✅ Consultation ID:', savedData.id);
       console.log('✅ Full saved data:', savedData);
 
-      // 2. ENSUITE : Créer la session Stripe avec l'ID de consultation
-      console.log('💳 STEP 4: Creating Stripe session...');
-      console.log('💳 Consultation ID to send:', savedData.id);
+      // 2. ENSUITE : Rediriger vers le Payment Link Stripe avec client_reference_id
+      console.log('💳 STEP 4: Preparing Stripe Payment Link...');
+      console.log('💳 Consultation ID:', savedData.id);
       
-      const requestBody = {
-        formData: consultationData,
-        consultationId: savedData.id,
-      };
+      // Récupérer le Payment Link depuis les variables d'environnement ou utiliser le lien par défaut
+      // Pour le mode TEST: https://buy.stripe.com/test_aFa6oHfLFcnDgJ8eHY4Ja00
+      // Pour le mode LIVE: https://buy.stripe.com/aFa6oHfLFcnDgJ8eHY4Ja00
+      const STRIPE_PAYMENT_LINK = import.meta.env.VITE_STRIPE_PAYMENT_LINK || 
+                                   'https://buy.stripe.com/test_aFa6oHfLFcnDgJ8eHY4Ja00';
       
-      console.log('💳 Request body:', requestBody);
+      // Construire l'URL avec client_reference_id
+      const stripeUrl = `${STRIPE_PAYMENT_LINK}?client_reference_id=${savedData.id}`;
       
-      const response = await fetch('/api/checkout', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestBody),
-      });
-
-      console.log('💳 Stripe API response status:', response.status);
-      console.log('💳 Stripe API response ok:', response.ok);
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('❌ Stripe API error:', errorData);
-        throw new Error(errorData.message || 'Erreur lors de la création de la session de paiement');
-      }
-
-      const responseData = await response.json();
-      console.log('💳 Stripe API response data:', responseData);
-      
-      const { url: stripeUrl } = responseData;
-
-      if (!stripeUrl) {
-        console.error('❌ No Stripe URL in response:', responseData);
-        throw new Error('URL Stripe non reçue');
-      }
-
-      console.log('✅ STEP 4 SUCCESS: Session Stripe créée');
+      console.log('✅ STEP 4 SUCCESS: Payment Link préparé');
       console.log('🔗 Stripe URL:', stripeUrl);
 
       // Clear form data
@@ -196,7 +171,7 @@ export function Step20({ form, onNext, onPrev, formData }: StepComponentProps<St
       
       toast({
         title: "❌ Erreur",
-        description: error instanceof Error ? error.message : "Impossible de créer la session de paiement. Veuillez réessayer.",
+        description: error instanceof Error ? error.message : "Impossible d'enregistrer votre consultation. Veuillez réessayer.",
         variant: "destructive",
       });
       
