@@ -81,45 +81,70 @@ export function FormWizard({ steps, onComplete }: FormWizardProps) {
   };
 
   const handleAutoFill = () => {
-    // Données de test pré-remplies
+    // Données de test pré-remplies - TOUTES les données nécessaires
+    const today = new Date();
+    const dateFin = new Date(today);
+    dateFin.setDate(dateFin.getDate() + 3); // +3 jours
+    
     const testData: Partial<ConsultationFormData> = {
-      maladie_presumee: "Grippe",
-      symptomes: ["Fièvre", "Toux"],
+      // Step 1
+      maladie_presumee: "gastro",
+      // Step 2
+      symptomes: ["fievre", "douleurs", "nausees"],
+      // Step 3
       diagnostic_anterieur: "non",
-      autres_symptomes: "",
-      zones_douleur: [],
-      apparition_soudaine: "progressif",
-      medicaments_reguliers: "non",
+      // Step 4
+      autres_symptomes: "Maux de tête et fatigue générale depuis quelques jours",
+      // Step 5
+      zones_douleur: ["ventre", "tete"],
+      // Step 6
+      apparition_soudaine: "non",
+      // Step 7
+      medicaments_reguliers: "Aucun",
+      // Step 8
       facteurs_risque: [],
-      type_arret: "initial",
-      profession: "Employé",
-      date_debut: new Date(),
-      date_fin: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // +3 jours
-      date_fin_lettres: "trois",
-      nom_prenom: "Test User",
-      date_naissance: new Date("1990-01-01"),
+      // Step 9
+      type_arret: "nouvel",
+      // Step 10
+      profession: "Employé de bureau",
+      // Step 11
+      date_debut: today,
+      date_fin: dateFin,
+      date_fin_lettres: "TROIS",
+      // Step 12
+      nom_prenom: "DUPONT JEAN",
+      // Step 13
+      date_naissance: new Date("1990-01-15"),
+      // Step 14
       email: "test@example.com",
-      adresse: "123 rue Test",
+      email_confirmation: "test@example.com",
+      // Step 15 (Step16)
+      adresse: "123 RUE DE TEST",
       code_postal: "75001",
-      ville: "Paris",
-      pays: "France",
-      situation_pro: "salarie",
+      ville: "PARIS",
+      pays: "FR",
+      // Step 16 (Step17)
+      situation_pro: "employe",
+      // Step 17 (Step18)
       localisation_medecin: "Paris",
+      // Step 18 (Step19)
       numero_securite_sociale: "190010112345678",
-      conditions_acceptees: false,
+      // Step 19 (Step20)
+      conditions_acceptees: true,
     };
     
     // Mettre à jour formData et sauvegarder
     setFormData(testData);
     saveFormData(testData);
     
-    // Sauter à l'étape 18 (index 18 = Step 19 - numéro sécu)
-    setCurrentStep(18);
+    // Sauter directement à la dernière étape (Step 20 - Paiement)
+    // Index 18 car il y a 19 steps (0-18)
+    setCurrentStep(steps.length - 1);
     window.scrollTo({ top: 0, behavior: "smooth" });
     
     toast({
-      title: "✅ Formulaire rempli",
-      description: "Données de test chargées. Vous êtes à l'étape 19.",
+      title: "✅ Quick Test activé",
+      description: "Formulaire rempli automatiquement. Vous êtes à l'étape de paiement.",
     });
   };
 

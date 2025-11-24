@@ -23,7 +23,7 @@ export function Step1({ form, onAutoFill }: StepComponentProps<Step1Data>) {
   return (
     <div className="space-y-6">
       {/* Bouton de navigation */}
-      <div className="flex justify-start items-center">
+      <div className="flex justify-between items-center">
         <Button
           variant="ghost"
           size="sm"
@@ -33,6 +33,20 @@ export function Step1({ form, onAutoFill }: StepComponentProps<Step1Data>) {
         >
           <ArrowLeft className="h-4 w-4" />
         </Button>
+        
+        {/* Bouton Quick Test */}
+        {onAutoFill && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onAutoFill}
+            className="bg-yellow-50 border-yellow-200 text-yellow-700 hover:bg-yellow-100 hover:text-yellow-800"
+            aria-label="Quick Test - Remplir automatiquement"
+          >
+            <Zap className="h-4 w-4 mr-2" />
+            Quick Test
+          </Button>
+        )}
       </div>
       <div className="space-y-2">
         <Label htmlFor="maladie_presumee" className="text-base font-medium">
