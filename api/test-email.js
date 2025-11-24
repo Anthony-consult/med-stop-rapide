@@ -1,92 +1,10 @@
-// Vercel Serverless Function for webhook endpoint
-// Deploy this to Vercel Functions or similar serverless platform
+// Test endpoint pour vérifier l'envoi d'email avec Resend
+// Utilise la même logique que new-lead.js mais sans authentification webhook
 
 import nodemailer from "nodemailer";
 import { Resend } from "resend";
 
-// Env vars
-const WEBHOOK_TOKEN = process.env.SUPABASE_WEBHOOK_TOKEN; // required
-const TO = process.env.ALERT_RECIPIENT || process.env.GMAIL_RECIPIENT || "contact@consult-chrono.fr"; // recipient (priorité: ALERT_RECIPIENT > GMAIL_RECIPIENT > défaut)
-
-// SMTP Hostinger (Option A)
-const SMTP_HOST = process.env.SMTP_HOST;      // e.g. "smtp.hostinger.com"
-const SMTP_PORT = Number(process.env.SMTP_PORT || "465");
-const SMTP_USER = process.env.SMTP_USER;      // e.g. "contact@consult-chrono.fr"
-const SMTP_PASS = process.env.SMTP_PASS;
-
-// Resend (Option B)
-const RESEND_API_KEY = process.env.RESEND_API_KEY;
-
-export default async function handler(req, res) {
-  // Only allow POST requests
-  if (req.method !== 'POST') {
-    return res.status(405).json({ ok: false, error: 'Method not allowed' });
-  }
-
-  try {
-    // Security: shared token
-    const token = req.headers['x-webhook-token'];
-    if (!WEBHOOK_TOKEN || token !== WEBHOOK_TOKEN) {
-      return res.status(401).json({ ok: false, error: 'Unauthorized' });
-    }
-
-    const body = req.body;
-    const record = body?.record ?? {};
-
-    const subject = `Nouvelle demande – ${safe(record?.prenom)} ${safe(record?.nom)}`.trim();
-    const { html, text, csv } = renderConsultEmail(record);
-
-    if (RESEND_API_KEY) {
-      // Option B: Resend
-      const resend = new Resend(RESEND_API_KEY);
-      
-      // Utiliser le domaine vérifié si disponible, sinon utiliser le domaine par défaut de Resend
-      // Pour utiliser votre domaine: vérifiez-le dans Resend Dashboard → Domains
-      const fromEmail = process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
-      
-      await resend.emails.send({
-        from: fromEmail,
-        to: [TO],
-        subject,
-        html,
-        text,
-        attachments: csv ? [{
-          filename: `consultation_${record.id ?? 'data'}.csv`,
-          content: Buffer.isBuffer(csv) ? csv.toString('base64') : csv,
-          contentType: 'text/csv'
-        }] : undefined,
-      });
-    } else {
-      // Option A: SMTP Hostinger (default)
-      const transporter = nodemailer.createTransport({
-        host: SMTP_HOST,
-        port: SMTP_PORT,
-        secure: SMTP_PORT === 465, // true for 465, false for 587
-        auth: { user: SMTP_USER, pass: SMTP_PASS },
-      });
-
-      await transporter.sendMail({
-        from: `Consult-Chrono <${SMTP_USER}>`,
-        to: TO,
-        subject,
-        html,
-        text,
-        attachments: csv ? [{
-          filename: `consultation_${record.id ?? 'data'}.csv`,
-          content: csv,
-          contentType: 'text/csv'
-        }] : undefined,
-      });
-    }
-
-    return res.status(200).json({ ok: true });
-  } catch (err) {
-    console.error("Webhook error:", err);
-    return res.status(500).json({ ok: false, error: err?.message ?? "unknown" });
-  }
-}
-
-// Email rendering functions
+// Import des fonctions de rendu depuis new-lead.js
 function safe(v) {
   return typeof v === "string" ? v : v == null ? "" : String(v);
 }
@@ -134,50 +52,19 @@ function formatDateSimple(date) {
   }
 }
 
-function shouldMaskField(key) {
-  // Ne plus masquer le numéro de sécurité sociale
-  // Le numéro complet est nécessaire pour le médecin
-  return false;
-}
-
-function maskSensitive(value) {
-  if (!value || typeof value !== 'string') return '';
-  if (value.length <= 5) return value;
-  
-  const start = value.slice(0, 3);
-  const end = value.slice(-2);
-  const middle = '*'.repeat(Math.max(0, value.length - 5));
-  return `${start}${middle}${end}`;
-}
-
 function formatValue(key, value) {
   if (value === null || value === undefined || value === '') return '';
   
-  // Format dates without time
   const dateOnlyFields = ['date_debut', 'date_fin', 'date_naissance'];
   if (dateOnlyFields.includes(key)) {
     return formatDateSimple(value);
   }
   
-  const stringValue = String(value);
-  
-  if (shouldMaskField(key)) {
-    return maskSensitive(stringValue);
-  }
-  return stringValue;
-}
-
-function renderConsultEmail(record) {
-  const html = renderHTML(record);
-  const text = renderText(record);
-  const csv = renderCSV(record);
-  
-  return { html, text, csv };
+  return String(value);
 }
 
 function renderHTML(record) {
   const paymentStatus = record.payment_status === 'done';
-  const hasLogo = true;
   
   const summaryFields = [
     { key: 'nom', label: 'Nom' },
@@ -230,36 +117,27 @@ function renderHTML(record) {
     <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Nouvelle demande - Consult-Chrono</title>
+      <title>🧪 TEST EMAIL - Consult-Chrono</title>
     </head>
     <body style="margin: 0; padding: 0; background-color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #0F172A;">
       <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff;">
-        
-        <!-- Header -->
         <div style="background: linear-gradient(135deg, #0A6ABF 0%, #3B82F6 100%); padding: 20px; text-align: center;">
-          <div style="display: flex; align-items: center; justify-content: center; gap: 12px;">
-            ${hasLogo ? `
-              <img src="https://consult-chrono.fr/logo-big.png" alt="Consult-Chrono" style="height: 28px; width: auto;">
-            ` : ''}
-            <h1 style="margin: 0; color: #ffffff; font-size: 20px; font-weight: 600;">
-              Nouvelle demande – Consult-Chrono
-              ${paymentStatus ? '<span style="background: #10B981; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; margin-left: 8px;">PAYÉ</span>' : ''}
-            </h1>
-          </div>
+          <h1 style="margin: 0; color: #ffffff; font-size: 20px; font-weight: 600;">
+            🧪 TEST EMAIL – Consult-Chrono
+            ${paymentStatus ? '<span style="background: #10B981; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; margin-left: 8px;">PAYÉ</span>' : ''}
+          </h1>
         </div>
-        
-        <!-- Content -->
         <div style="padding: 24px;">
-          
-          <!-- Summary Section -->
+          <div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 8px; padding: 16px; margin-bottom: 24px;">
+            <p style="margin: 0; font-weight: 600; color: #92400e;">⚠️ Ceci est un email de TEST</p>
+            <p style="margin: 8px 0 0 0; color: #92400e;">Si vous recevez cet email, la configuration Resend fonctionne correctement ! ✅</p>
+          </div>
           <div style="background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-bottom: 24px;">
             <h2 style="margin: 0 0 16px 0; font-size: 16px; font-weight: 600; color: #0F172A;">Résumé</h2>
             <table style="width: 100%; border-collapse: collapse;">
               ${summaryHTML}
             </table>
           </div>
-          
-          <!-- Details Section -->
           <div style="border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;">
             <div style="background: #f8fafc; padding: 16px; border-bottom: 1px solid #e5e7eb;">
               <h2 style="margin: 0; font-size: 16px; font-weight: 600; color: #0F172A;">Détails complets</h2>
@@ -276,17 +154,12 @@ function renderHTML(record) {
               </tbody>
             </table>
           </div>
-          
         </div>
-        
-        <!-- Footer -->
         <div style="background: #f8fafc; padding: 16px; text-align: center; border-top: 1px solid #e5e7eb;">
           <p style="margin: 0; font-size: 12px; color: #64748b;">
-            Données stockées dans Supabase (UE) — © 
-            <a href="https://consult-chrono.fr" style="color: #0A6ABF; text-decoration: underline;">consult-chrono.fr</a>
+            Données de test — © consult-chrono.fr
           </p>
         </div>
-        
       </div>
     </body>
     </html>
@@ -295,13 +168,14 @@ function renderHTML(record) {
 
 function renderText(record) {
   const lines = [];
-  
-  lines.push('NOUVELLE DEMANDE – CONSULT-CHRONO');
+  lines.push('🧪 TEST EMAIL – CONSULT-CHRONO');
   lines.push('='.repeat(40));
+  lines.push('');
+  lines.push('⚠️ Ceci est un email de TEST');
+  lines.push('Si vous recevez cet email, la configuration Resend fonctionne correctement ! ✅');
   lines.push('');
   
   const summaryFields = ['nom', 'prenom', 'email', 'created_at', 'payment_status'];
-  
   summaryFields.forEach(key => {
     if (record[key]) {
       const label = formatKey(key);
@@ -325,8 +199,7 @@ function renderText(record) {
     });
   
   lines.push('');
-  lines.push('Données stockées dans Supabase (UE) — © consult-chrono.fr');
-  
+  lines.push('Données de test — © consult-chrono.fr');
   return lines.join('\n');
 }
 
@@ -344,6 +217,105 @@ function renderCSV(record) {
     return `${escapedLabel};${escapedValue}`;
   }).join('\n');
   
-  const csvContent = '\uFEFF' + header + rows; // UTF-8 BOM for Excel
+  const csvContent = '\uFEFF' + header + rows;
   return Buffer.from(csvContent, 'utf8');
 }
+
+function renderConsultEmail(record) {
+  const html = renderHTML(record);
+  const text = renderText(record);
+  const csv = renderCSV(record);
+  return { html, text, csv };
+}
+
+export default async function handler(req, res) {
+  // Allow GET and POST for easy testing
+  if (req.method !== 'POST' && req.method !== 'GET') {
+    return res.status(405).json({ ok: false, error: 'Method not allowed' });
+  }
+
+  try {
+    const RESEND_API_KEY = process.env.RESEND_API_KEY;
+    const TO = process.env.ALERT_RECIPIENT || "soniwork009@gmail.com";
+
+    if (!RESEND_API_KEY) {
+      return res.status(500).json({ 
+        ok: false, 
+        error: 'RESEND_API_KEY not configured',
+        hint: 'Add RESEND_API_KEY to your environment variables'
+      });
+    }
+
+    if (!TO) {
+      return res.status(500).json({ 
+        ok: false, 
+        error: 'ALERT_RECIPIENT not configured',
+        hint: 'Add ALERT_RECIPIENT to your environment variables'
+      });
+    }
+
+    console.log('📧 Testing email send with Resend...');
+    console.log('📧 To:', TO);
+    console.log('📧 Resend API Key:', RESEND_API_KEY ? '✅ Set (length: ' + RESEND_API_KEY.length + ')' : '❌ Missing');
+
+    // Créer des données de test
+    const testRecord = {
+      id: 'test-' + Date.now(),
+      prenom: 'Jean',
+      nom: 'Dupont',
+      email: 'jean.dupont@example.com',
+      telephone: '06 12 34 56 78',
+      date_naissance: '1985-03-15',
+      maladie_presumee: 'Grippe',
+      created_at: new Date().toISOString(),
+      payment_status: 'done',
+    };
+
+    const subject = `🧪 TEST EMAIL – ${testRecord.prenom} ${testRecord.nom}`;
+    const { html, text, csv } = renderConsultEmail(testRecord);
+
+    // Utiliser le domaine par défaut de Resend pour les tests
+    // Si vous avez vérifié votre domaine, utilisez: "Consult-Chrono <notifications@consult-chrono.fr>"
+    // Sinon utilisez le domaine de test: "onboarding@resend.dev"
+    const fromEmail = process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
+    
+    const resend = new Resend(RESEND_API_KEY);
+    
+    console.log('📧 Sending email...');
+    console.log('📧 From:', fromEmail);
+    
+    const result = await resend.emails.send({
+      from: fromEmail,
+      to: [TO],
+      subject,
+      html,
+      text,
+      attachments: csv ? [{
+        filename: `test_consultation_${testRecord.id}.csv`,
+        content: csv.toString('base64'),
+        contentType: 'text/csv'
+      }] : undefined,
+    });
+
+    console.log('✅ Email sent successfully!');
+    console.log('📧 Result ID:', result?.id);
+
+    return res.status(200).json({ 
+      ok: true,
+      message: 'Test email sent successfully!',
+      to: TO,
+      from: fromEmail,
+      subject,
+      emailId: result?.id,
+      timestamp: new Date().toISOString()
+    });
+  } catch (err) {
+    console.error("❌ Email test error:", err);
+    return res.status(500).json({ 
+      ok: false, 
+      error: err?.message ?? "unknown",
+      details: err?.response?.data ?? err?.stack
+    });
+  }
+}
+
