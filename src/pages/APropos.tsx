@@ -378,7 +378,7 @@ export default function APropos() {
                     </p>
                     <Button
                       onClick={() => {
-                        window.location.href = 'mailto:contact@consult-chrono.fr';
+                        window.location.href = 'mailto:soniwork009@gmail.com';
                       }}
                       className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 rounded-xl font-semibold"
                     >

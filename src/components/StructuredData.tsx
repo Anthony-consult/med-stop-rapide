@@ -31,7 +31,7 @@ const StructuredData = ({ faqs }: StructuredDataProps) => {
     "url": "https://www.consult-chrono.fr",
     "logo": "https://www.consult-chrono.fr/logo-big.png",
     "image": "https://www.consult-chrono.fr/logo-big.png",
-    "email": "contact@consult-chrono.fr",
+    "email": "soniwork009@gmail.com",
     "areaServed": {
       "@type": "Country",
       "name": "France"

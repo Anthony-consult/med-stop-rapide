@@ -135,12 +135,12 @@ export default async function handler(req, res) {
     
     // S'assurer qu'on renvoie toujours une réponse JSON valide
     if (!res.headersSent) {
-      return res.status(500).json({ 
-        error: 'Failed to create checkout session',
+    return res.status(500).json({ 
+      error: 'Failed to create checkout session',
         message: error.message,
         type: error.type || 'Unknown',
         code: error.code || 'UNKNOWN_ERROR'
-      });
+    });
     } else {
       console.error('⚠️ Response already sent, cannot send error response');
     }

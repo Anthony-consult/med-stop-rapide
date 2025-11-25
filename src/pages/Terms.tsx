@@ -227,8 +227,8 @@ const Terms = () => {
                     <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
                       <div className="flex items-center gap-2">
                         <Mail className="h-5 w-5 text-blue-600" />
-                        <a href="mailto:contact@consult-chrono.fr" className="text-blue-700 hover:text-blue-900 font-semibold">
-                          contact@consult-chrono.fr
+                        <a href="mailto:soniwork009@gmail.com" className="text-blue-700 hover:text-blue-900 font-semibold">
+                          soniwork009@gmail.com
                         </a>
                       </div>
                     </div>
@@ -291,8 +291,8 @@ const Terms = () => {
                     <Mail className="h-6 w-6 text-blue-600 mt-0.5 flex-shrink-0" />
                     <div>
                       <p className="text-blue-800 font-semibold mb-2">Pour toute question, demande d'assistance ou réclamation :</p>
-                      <a href="mailto:contact@consult-chrono.fr" className="text-blue-700 hover:text-blue-900 font-semibold">
-                        📧 contact@consult-chrono.fr
+                      <a href="mailto:soniwork009@gmail.com" className="text-blue-700 hover:text-blue-900 font-semibold">
+                        📧 soniwork009@gmail.com
                       </a>
                       <p className="text-blue-600 text-sm mt-2">
                         <Clock className="h-4 w-4 inline mr-1" />

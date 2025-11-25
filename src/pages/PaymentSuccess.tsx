@@ -283,10 +283,10 @@ export default function PaymentSuccess() {
             <p className="text-sm text-gray-500">
               Une question ? Contactez-nous à{' '}
               <a 
-                href="mailto:contact@consult-chrono.fr" 
+                href="mailto:soniwork009@gmail.com" 
                 className="text-blue-600 hover:underline"
               >
-                contact@consult-chrono.fr
+                soniwork009@gmail.com
               </a>
             </p>
           </div>

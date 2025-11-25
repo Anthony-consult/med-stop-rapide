@@ -141,7 +141,7 @@ export function Step20({ form, onNext, onPrev, formData }: StepComponentProps<St
       
       // Construire l'URL avec client_reference_id
       const stripeUrl = `${STRIPE_PAYMENT_LINK}?client_reference_id=${savedData.id}`;
-      
+
       console.log('✅ STEP 4 SUCCESS: Payment Link préparé');
       console.log('🔗 Stripe URL:', stripeUrl);
 
