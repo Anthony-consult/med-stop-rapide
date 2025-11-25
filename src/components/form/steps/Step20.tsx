@@ -134,11 +134,10 @@ export function Step20({ form, onNext, onPrev, formData }: StepComponentProps<St
       console.log('💳 STEP 4: Preparing Stripe Payment Link...');
       console.log('💳 Consultation ID:', savedData.id);
       
-      // Récupérer le Payment Link depuis les variables d'environnement ou utiliser le lien par défaut
-      // Pour le mode TEST: https://buy.stripe.com/test_aFa6oHfLFcnDgJ8eHY4Ja00
-      // Pour le mode LIVE: https://buy.stripe.com/aFa6oHfLFcnDgJ8eHY4Ja00
+      // Récupérer le Payment Link depuis les variables d'environnement ou utiliser le lien de production par défaut
+      // Lien de production: https://buy.stripe.com/aFa6oHfLFcnDgJ8eHY4Ja00
       const STRIPE_PAYMENT_LINK = import.meta.env.VITE_STRIPE_PAYMENT_LINK || 
-                                   'https://buy.stripe.com/test_aFa6oHfLFcnDgJ8eHY4Ja00';
+                                   'https://buy.stripe.com/aFa6oHfLFcnDgJ8eHY4Ja00';
       
       // Construire l'URL avec client_reference_id
       const stripeUrl = `${STRIPE_PAYMENT_LINK}?client_reference_id=${savedData.id}`;
