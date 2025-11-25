@@ -135,9 +135,9 @@ export function Step20({ form, onNext, onPrev, formData }: StepComponentProps<St
       console.log('💳 Consultation ID:', savedData.id);
       
       // Récupérer le Payment Link depuis les variables d'environnement ou utiliser le lien de production par défaut
-      // Lien de production: https://buy.stripe.com/aFa6oHfLFcnDgJ8eHY4Ja00
+      // Lien de production: https://buy.stripe.com/00wfZh0QL1IZ64uczQ4Ja01
       const STRIPE_PAYMENT_LINK = import.meta.env.VITE_STRIPE_PAYMENT_LINK || 
-                                   'https://buy.stripe.com/aFa6oHfLFcnDgJ8eHY4Ja00';
+                                   'https://buy.stripe.com/00wfZh0QL1IZ64uczQ4Ja01';
       
       // Construire l'URL avec client_reference_id
       const stripeUrl = `${STRIPE_PAYMENT_LINK}?client_reference_id=${savedData.id}`;
