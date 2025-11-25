@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import CardNav from "@/components/CardNav";
-import { Mail, Shield, CreditCard, Clock, AlertCircle, CheckCircle } from "lucide-react";
+import { Mail, Shield, CreditCard, Clock, AlertCircle, CheckCircle, Infinity, BookOpen, User, RefreshCw, Headphones } from "lucide-react";
 
 const Terms = () => {
   const navigate = useNavigate();
@@ -133,6 +133,60 @@ const Terms = () => {
                     <CheckCircle className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
                     <p className="text-blue-800 text-sm">
                       En cas de non-éligibilité à la délivrance du document, le paiement est intégralement remboursé sur le moyen de paiement initial.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Section 2.5 - Abonnement mensuel */}
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <span className="w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center text-sm font-bold">2.5</span>
+                Abonnement mensuel
+              </h2>
+              <div className="ml-10 space-y-4">
+                <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
+                  <div className="flex items-center gap-2 mb-3">
+                    <CreditCard className="h-5 w-5 text-purple-600" />
+                    <span className="font-semibold text-purple-800">Abonnement mensuel : 14,00 € TTC</span>
+                  </div>
+                  <p className="text-gray-700 leading-relaxed mb-4">
+                    L'abonnement mensuel à 14€ donne accès en illimité à :
+                  </p>
+                  <ul className="list-disc pl-6 space-y-2 text-gray-700">
+                    <li className="flex items-start gap-2">
+                      <Infinity className="h-4 w-4 text-purple-600 mt-1 flex-shrink-0" />
+                      <span>des outils d'auto-évaluation et d'analyse en ligne,</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <BookOpen className="h-4 w-4 text-purple-600 mt-1 flex-shrink-0" />
+                      <span>une bibliothèque de documents et guides personnalisés,</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <User className="h-4 w-4 text-purple-600 mt-1 flex-shrink-0" />
+                      <span>un espace personnel sécurisé,</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <RefreshCw className="h-4 w-4 text-purple-600 mt-1 flex-shrink-0" />
+                      <span>des mises à jour régulières du contenu,</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Headphones className="h-4 w-4 text-purple-600 mt-1 flex-shrink-0" />
+                      <span>une assistance prioritaire disponible 7j/7.</span>
+                    </li>
+                  </ul>
+                  <div className="mt-4 p-3 bg-purple-100 rounded-lg">
+                    <p className="text-purple-900 text-sm font-semibold">
+                      Un ensemble complet de services numériques accessibles 24h/24, sans aucune limitation.
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-4 p-4 bg-blue-50 rounded-lg">
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                    <p className="text-blue-800 text-sm">
+                      L'abonnement se renouvelle automatiquement chaque mois. Vous pouvez résilier votre abonnement à tout moment depuis votre espace personnel ou en nous contactant.
                     </p>
                   </div>
                 </div>
